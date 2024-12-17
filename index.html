@@ -23,14 +23,25 @@
   and sort: 
   from most to least ingredients and vice versa, 
   from longest to shortest cooking time and vice versa-->
-  <nav></nav>
+  <nav>
+    <div class="filter-and-sort">
+      <button class="filtering-button" onclick="filterSelection('all')">All
+      </button>
+    </div>
+
+    <div class="randomizer">
+      <button type="button" class="randomize" onclick="randomRecipe()">Random Recipe</button>
+    </div>
+  </nav>
 
 
   <main>
 
     <!--Recipes-->
     <section id="recipe-container">
+    </section>
 
+    <section id="randomize-container">
     </section>
 
     <!--randomize recipe?, button to pick than display recipe-->
