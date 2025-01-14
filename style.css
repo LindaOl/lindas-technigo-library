@@ -4,6 +4,7 @@
   --font-family-sans-serif: "Roboto", "Helvetica", sans-serif;
   --font-family-serif: "Frank Ruhl Libre", Georgia, serif;
   --nav-link-text-color: #367a64;
+  --menu-background: rgb(220, 220, 220);
 }
 
 html {
@@ -72,6 +73,10 @@ nav a:visited {
   display: flex;
 }
 
+.filters ul {
+  list-style: none;
+}
+
 .filters button {
   border-radius: 30px;
   border: 1px solid rgba(210, 210, 210, 0.7);
@@ -92,7 +97,71 @@ nav a:visited {
   width: 100%;
   flex-direction: row;
   justify-content: center;
+  position: relative;
 }
+
+#filter-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  background-color: var(--menu-background);
+  border-radius: 5px;
+  filter: drop-shadow(1px 1px 1px rgba(137, 137, 137, 0.5));
+  color: white;
+  z-index: 10;
+  width: 100%;
+  max-width: 120px;
+  cursor: pointer;
+  padding: 3px;
+}
+
+#filter-dropdown li {
+  display: flex;
+  align-items: start;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background-color: var(--nav-link-text-color);
+  filter: drop-shadow(2px 2px 2px rgba(137, 137, 137, 0.5));
+}
+
+#filter-dropdown li:hover,
+ul.submenu-cuisine li:hover,
+ul.submenu-ingredients li:hover {
+  background-color: var(--background-button);
+  color: black;
+  transition: 0.5s;
+}
+
+ul.submenu-cuisine,
+ul.submenu-ingredients {
+  margin-left: 20px;
+  margin-right: auto;
+  position: absolute;
+  top: 0;
+  left: 95px;
+  display: none;
+  background-color: var(--menu-background);
+  width: 100%;
+}
+
+ul.submenu-ingredients {
+  top: 0;
+}
+
+ul.submenu-cuisine li,
+ul.submenu-ingredients li {
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: var(--nav-link-text-color);
+  color: white;
+  width: 110px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+
 
 main {
   grid-area: main;
@@ -145,6 +214,6 @@ main {
   border-radius: 30px;
 }
 
-. footer {
+footer {
   grid-area: footer;
 }

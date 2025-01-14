@@ -36,9 +36,34 @@
     <div class="filter-and-sort">
       <button type="button" class="filtering-all" onclick="getAllRecipes()">All</button>
 
-      <button class="filter-menu">Filters&#11167;</button>
+      <button id="filter-menu">Filters&#11167;</button>
+      <div id="filter-dropdown">
+        <ul>
+          <li id="cuisine-link">
+            Cuisine Type
 
+            <ul class="submenu-cuisine">
+              <li>South-American</li>
+              <li>American</li>
+              <li>South East Asian</li>
+              <li>Low-Carb</li>
+              <li>Balanced</li>
+              <li>High-Fiber</li>
+              <li>Italian</li>
+            </ul>
+          </li>
+          <li class="filter-menu-link" id="ingredients">Ingredients
+            <ul class="submenu-ingredients">
+              <li>Meat</li>
+              <li>Sea Food</li>
+              <li>Chicken</li>
+              <li>Vegetarian</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
       <button class="sort-menu">Sort by&#11206;</button>
+
     </div>
 
 

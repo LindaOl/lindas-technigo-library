@@ -8,7 +8,7 @@ Remember to remove code you don't need.
 const recipes = [
   {
     name: 'Individual vegetarian lasagnes',
-    cuisineType: ['italian'],
+    cuisineType: ['Italian'],
     ingredients: [
       '1.2 kg cherry tomatoes',
       '5 sprigs of fresh thyme',
@@ -295,3 +295,57 @@ const getAllRecipes = () => {
   document.getElementById('randomize-container').style.display = "none";
   displayRecipes();
 };
+
+const getDropdownMenu = () => {
+  const filterMenuButton = document.getElementById('filter-menu');
+  const dropdownMenu = document.getElementById('filter-dropdown');
+
+  filterMenuButton.addEventListener('click', () => {
+    if (dropdownMenu.style.display === "block") {
+      dropdownMenu.style.display = "none";
+    } else {
+      dropdownMenu.style.display = "block";
+    }
+  });
+
+};
+getDropdownMenu();
+
+
+//filter genre
+const getSubmenu = () => {
+  const menuItems = document.querySelectorAll('li');
+
+  menuItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      const submenu = item.querySelector('ul');
+
+      if (submenu) {
+        if (submenu.style.display === "block") {
+          submenu.style.display = "none";
+        } else {
+          submenu.style.display = "block";
+        }
+      }
+      e.stopPropagation();
+    });
+  });
+};
+
+getSubmenu();
+/*
+const getCuisineMenu = () => {
+  const cuisineButton = document.getElementById('cuisine-link');
+  const cuisineMenu = document.querySelector('.submenu-cuisine');
+
+  cuisineButton.addEventListener('click', () => {
+    if (cuisineMenu.style.display === "block") {
+      cuisineMenu.style.display = "none";
+    } else {
+      cuisineMenu.style.display = "block";
+    }
+  });
+
+};
+getCuisineMenu();
+*/
