@@ -24,15 +24,28 @@
   from most to least ingredients and vice versa, 
   from longest to shortest cooking time and vice versa-->
   <nav>
+    <ul>
+
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Login</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+  </nav>
+
+  <section class="filters">
     <div class="filter-and-sort">
-      <button class="filtering-button" onclick="filterSelection('all')">All
-      </button>
+      <button type="button" class="filtering-all" onclick="getAllRecipes()">All</button>
+
+      <button class="filter-menu">Filters&#11167;</button>
+
+      <button class="sort-menu">Sort by&#11206;</button>
     </div>
+
 
     <div class="randomizer">
       <button type="button" class="randomize" onclick="randomRecipe()">Random Recipe</button>
     </div>
-  </nav>
+  </section>
 
 
   <main>

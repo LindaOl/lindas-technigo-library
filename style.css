@@ -1,3 +1,150 @@
+:root {
+  --background-main: rgb(221, 240, 234);
+  --background-button: rgb(221, 240, 234);
+  --font-family-sans-serif: "Roboto", "Helvetica", sans-serif;
+  --font-family-serif: "Frank Ruhl Libre", Georgia, serif;
+  --nav-link-text-color: #367a64;
+}
+
+html {
+  font-size: 16px;
+}
+
+/* universal selector */
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  background: blue;
+  background: var(--background-main);
+  font-family: var(--font-family-sans-serif);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto 1fr auto;
+  grid-template-areas:
+    "header"
+    "navbar"
+    "filtersSort"
+    "main"
+    "footer";
+}
+
+header,
+nav,
+.filters {
+  background-color: white;
+  padding: 5px 0;
+  width: 100%;
+}
+
+nav {
+  grid-area: navbar;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--nav-link-text-color);
+  font-size: 20px;
+  font-style: bold;
+}
+
+nav a:hover {
+  cursor: pointer;
+}
+
+nav a:visited {
+  color: ;
+}
+
+.filters {
+  grid-area: filtersSort;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+}
+
+.filters button {
+  border-radius: 30px;
+  border: 1px solid rgba(210, 210, 210, 0.7);
+  padding: 5px 10px;
+  margin: 2px 10px;
+  background-color: var(--background-button);
+  filter: drop-shadow(1px 1px 1px rgba(137, 137, 137, 0.5));
+}
+
+.filters button:hover {
+  background-color: var(--nav-link-text-color);
+  color: white;
+  transition: 0.5s;
+}
+
+.filter-and-sort {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: center;
+}
+
+main {
+  grid-area: main;
+  padding: 0px 1rem;
+}
+
+
+#recipe-container,
+#randomize-container {
+  width: 100%;
+  display: block;
+}
+
+.recipe {
+  width: 100%;
+  background-color: white;
+  margin: 0 0 15px 0;
+  filter: drop-shadow(2px 2px 3px rgba(137, 137, 137, 0.5));
+  padding: 0 0 10px 0;
+  font-family: var(--font-family-serif);
+}
+
+.recipe img {
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.recipe ul {
+  list-style-position: inside;
+}
+
+.recipe li {
+  line-height: 1.8;
+  font-family: var(--font-family-sans-serif);
+}
+
+.recipe h5,
+.recipe h4,
+.recipe h3,
+.recipe ul {
+  padding: 5px 10px;
+  line-height: 1.5;
+}
+
+.divider-line {
+  height: 1px;
+  background-color: rgb(194, 193, 193);
+  margin: 5px;
+  border-radius: 30px;
+}
+
+. footer {
+  grid-area: footer;
 }

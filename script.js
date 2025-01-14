@@ -225,31 +225,54 @@ const recipes = [
   }
 ]
 
-
-
+//run function to add all recipes to the page when it loads
+window.addEventListener('DOMContentLoaded', () => {
+  displayRecipes();
+});
 
 
 //Insert recipe into HTML with querySelector
-const getRecipe = document.querySelector("#recipe-container");
-
-let recipeContent = "";
+const getRecipe = document.querySelector('#recipe-container');
 
 
+//Make the ingredients in each array item into a list
 const makeList = (ingredientItem) => {
   return ingredientItem.map(ingredient => `<li>${ingredient}</li>`).join('');
 };
 
-//Filter buttons
+//Main library, all recipes displayed
+const displayRecipes = () => {
+  let recipeContent = '';
+  recipes.forEach(recipe => {
+    recipeContent += `
+    <article class="recipe">
+      <img src="${recipe.image}" alt="${recipe.name}" />
+      <h3>${recipe.name}</h3>
+      <div class="divider-line"></div>
+      <h4>Cuisine: ${recipe.cuisineType}</h4>
+      <h4 class="cooking-time">${recipe.totalTime} minutes</h4>
+      <div class="divider-line"></div>
+      <h4 class="ingredients-header">Ingredients</h4>
+      <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
+      ${makeList(recipe.ingredients)}
+      </ul>
+      <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
+    </article>
+  `;
+  });
+
+  getRecipe.innerHTML = recipeContent;
+};
 
 
 //Randomize-button
 const randomRecipe = () => {
 
-  document.getElementById("recipe-container").style.display = "none";
+  document.getElementById('recipe-container').style.display = "none";
 
   const randomItem = recipes[Math.floor(Math.random() * recipes.length)];
 
-  document.getElementById("randomize-container").innerHTML = `
+  document.getElementById('randomize-container').innerHTML = `
       <article class="recipe">
       <img src="${randomItem.image}" alt="${randomItem.name}" />
       <h3>${randomItem.name}</h3>
@@ -265,29 +288,10 @@ const randomRecipe = () => {
     </article>`
 };
 
+//filter buttons
 
-//Main library
-recipes.forEach(recipe => {
-  recipeContent += `
-    <article class="recipe">
-      <img src="${recipe.image}" alt="${recipe.name}" />
-      <h3>${recipe.name}</h3>
-      <div class="divider-line"></div>
-      <h4>Cuisine: ${recipe.cuisineType}</h4>
-      <h4 class="cooking-time">${recipe.totalTime} minutes</h4>
-      <div class="divider-line"></div>
-      <h4 class="ingredients-header">Ingredients</h4>
-      <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
-      ${makeList(recipe.ingredients)}
-      </ul>
-      <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
-    </article>
-  `;
-});
-
-getRecipe.innerHTML = recipeContent;
-
-
-
-
-
+const getAllRecipes = () => {
+  document.getElementById('recipe-container').style.display = "block";
+  document.getElementById('randomize-container').style.display = "none";
+  displayRecipes();
+};
