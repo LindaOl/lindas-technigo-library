@@ -237,7 +237,7 @@ window.addEventListener('DOMContentLoaded', () => {
 const getRecipe = document.querySelector('#recipe-container');
 const filterMenuButton = document.getElementById('filter-menu');
 const dropdownMenu = document.getElementById('filter-dropdown');
-const listItems = document.querySelectorAll('li');
+const listItems = document.querySelectorAll('#filter-dropdown li');
 
 //Make the ingredients in each array item into a list
 const makeList = (ingredientItem) => {
@@ -290,7 +290,7 @@ const displayFilteredRecipes = (filteredRecipes) => {
   `;
   });
   document.getElementById('recipe-container').style.display = "block";
-  document.getElementById('randomize-container').style.display = "hide";
+  document.getElementById('randomize-container').style.display = "none";
 
   getRecipe.innerHTML = recipeContent;
 };
@@ -338,7 +338,6 @@ const getDropdownMenu = () => {
       dropdownMenu.style.display = "block";
     }
   });
-
 };
 getDropdownMenu();
 
@@ -379,16 +378,20 @@ document.addEventListener('click', e => {
 
 //make eventListener on each menu word, and run filter functions
 listItems.forEach(li => {
-  li.addEventListener('click', () => {
-    const currentSearchWord = li.innerHTML.toLowerCase();
+  if (li.classList.contains('submenu-item')) {
+    li.addEventListener('click', () => {
+      const currentSearchWord = li.innerHTML.toLowerCase();
 
-    if (currentSearchWord === 'meat') {
-      const filteredRecipes = recipes.filter(recipe => checkForMeat(recipe));
-      displayFilteredRecipes(filteredRecipes);
-    } else {
-      filterBy(currentSearchWord);
-    }
-  });
+      if (currentSearchWord === 'meat') {
+        const filteredRecipes = recipes.filter(recipe => checkForMeat(recipe));
+        displayFilteredRecipes(filteredRecipes);
+        document.getElementById('filter-dropdown').style.display = "none";
+      } else {
+        filterBy(currentSearchWord);
+        document.getElementById('filter-dropdown').style.display = "none";
+      }
+    });
+  }
 });
 
 // Filter by ingredient
