@@ -100,7 +100,8 @@ nav a:visited {
   position: relative;
 }
 
-#filter-dropdown {
+#filter-dropdown,
+#sort-dropdown {
   display: none;
   position: absolute;
   top: 100%;
@@ -115,7 +116,8 @@ nav a:visited {
   padding: 3px;
 }
 
-#filter-dropdown li {
+#filter-dropdown li,
+#sort-dropdown li {
   display: flex;
   align-items: start;
   padding: 5px 10px;
@@ -126,7 +128,8 @@ nav a:visited {
 
 #filter-dropdown li:hover,
 ul.submenu-cuisine li:hover,
-ul.submenu-ingredients li:hover {
+ul.submenu-ingredients li:hover,
+#sort-dropdown li:hover {
   background-color: var(--background-button);
   color: black;
   transition: 0.5s;

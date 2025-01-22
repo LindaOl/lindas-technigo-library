@@ -236,8 +236,11 @@ window.addEventListener('DOMContentLoaded', () => {
 //Insert recipe into HTML with querySelector
 const getRecipe = document.querySelector('#recipe-container');
 const filterMenuButton = document.getElementById('filter-menu');
-const dropdownMenu = document.getElementById('filter-dropdown');
+const filterDropdown = document.getElementById('filter-dropdown');
 const listItems = document.querySelectorAll('#filter-dropdown li');
+const sortItems = document.querySelectorAll('#sort-dropdown li');
+const sortMenuButton = document.getElementById('sort-menu');
+const sortDropdown = document.getElementById('sort-dropdown');
 
 //Make the ingredients in each array item into a list
 const makeList = (ingredientItem) => {
@@ -329,17 +332,35 @@ const getAllRecipes = () => {
 };
 
 
-
-const getDropdownMenu = () => {
-  filterMenuButton.addEventListener('click', () => {
-    if (dropdownMenu.style.display === "block") {
-      dropdownMenu.style.display = "none";
-    } else {
-      dropdownMenu.style.display = "block";
-    }
-  });
+const toggleFilterDropdown = () => {
+  if (filterDropdown.style.display === "block") {
+    filterDropdown.style.display = "none";
+  } else {
+    filterDropdown.style.display = "block";
+    sortDropdown.style.display = "none";
+  }
 };
-getDropdownMenu();
+
+const toggleSortDropdown = () => {
+  if (sortDropdown.style.display === "block") {
+    sortDropdown.style.display = "none";
+  } else {
+    sortDropdown.style.display = "block";
+    filterDropdown.style.display = "none";
+  }
+};
+
+filterMenuButton.addEventListener('click', toggleFilterDropdown);
+sortMenuButton.addEventListener('click', toggleSortDropdown);
+
+document.addEventListener('click', (e) => {
+  if (!filterDropdown.contains(e.target) && e.target !== filterMenuButton) {
+    filterDropdown.style.display = "none";
+  }
+  if (!sortDropdown.contains(e.target) && e.target !== sortMenuButton) {
+    sortDropdown.style.display = "none";
+  }
+});
 
 const getSubmenu = () => {
   const menuItems = document.querySelectorAll('li');
@@ -370,8 +391,8 @@ getSubmenu();
 
 // close-menu-when-clicking-outside-of-it
 document.addEventListener('click', e => {
-  if (!dropdownMenu.contains(e.target) && e.target !== filterMenuButton) {
-    dropdownMenu.style.display = "none";
+  if (!filterDropdown.contains(e.target) && e.target !== filterMenuButton) {
+    filterDropdown.style.display = "none";
   }
 });
 
@@ -387,7 +408,7 @@ listItems.forEach(li => {
         displayFilteredRecipes(filteredRecipes);
         document.getElementById('filter-dropdown').style.display = "none";
       } else {
-        filterBy(currentSearchWord);
+        filterByIngredient(currentSearchWord);
         document.getElementById('filter-dropdown').style.display = "none";
       }
     });
@@ -395,7 +416,7 @@ listItems.forEach(li => {
 });
 
 // Filter by ingredient
-const filterBy = (currentSearchWord) => {
+const filterByIngredient = (currentSearchWord) => {
   const filteredRecipes = recipes.filter(recipe => {
     return recipe.ingredients.some(ingredient =>
       ingredient.toLowerCase().includes(currentSearchWord)
@@ -412,3 +433,73 @@ const checkForMeat = (recipe) => {
       ingredient.toLowerCase().includes(meatWord));
   });
 };
+
+
+//filter by cuisine
+listItems.forEach(li => {
+  if (li.classList.contains('submenu-item-c')) {
+    li.addEventListener('click', () => {
+      const currentSearchWord = li.innerHTML.toLowerCase();
+      filterByCuisine(currentSearchWord);
+      document.getElementById('filter-dropdown').style.display = "none";
+
+    });
+  }
+});
+
+const filterByCuisine = (currentSearchWord) => {
+  const filteredRecipes = recipes.filter(recipe => {
+    const cuisines = Array.isArray(recipe.cuisineType) ? recipe.cuisineType : [recipe.cuisineType];
+
+    return cuisines.some(cuisine =>
+      cuisine.toLowerCase().includes(currentSearchWord)
+    );
+  });
+
+  displayFilteredRecipes(filteredRecipes);
+};
+
+//Sorting functions
+const sortedbyTime = sortByKey(recipes, 'totalTime');
+const sortedbyName = sortByKey(recipes, 'name');
+
+const sortByKey = (array, key) => {
+  return array.sort((a, b) => {
+    if (key === 'totalTime') {
+      return (a[key] || 0) - (b[key] || 0);
+    } else {
+      return a[key].localeCompare(b[key]);
+    }
+  });
+};
+sortItems.forEach(li => {
+  li.addEventListener('click', () => {
+    const key = li.innerHTML.toLowerCase().trim() === 'time' ? 'totalTime' : 'name';
+    const sortedRecipesList = sortByKey([...recipes], key);
+    sortedRecipes(sortedRecipesList);
+  });
+});
+
+
+const sortedRecipes = (sortedRecipesList) => {
+  let recipeContent = '';
+  sortedRecipesList.forEach(recipe => {
+    recipeContent += `
+      <article class="recipe">
+        <img src="${recipe.image}" alt="${recipe.name}" />
+        <h3>${recipe.name}</h3>
+        <div class="divider-line"></div>
+        <h4>Cuisine: ${recipe.cuisineType}</h4>
+        <h4 class="cooking-time">${recipe.totalTime} minutes</h4>
+        <div class="divider-line"></div>
+        <h4 class="ingredients-header">Ingredients</h4>
+        <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
+          ${recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+        </ul>
+        <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
+      </article>
+    `;
+  });
+  getRecipe.innerHTML = recipeContent;
+};
+
