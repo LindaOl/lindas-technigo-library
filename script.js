@@ -223,7 +223,9 @@ const recipes = [
     url: 'http://www.seriouseats.com/recipes/2012/05/spice-rubbed-grilled-flap-meat-sirloin-tip-recipe.html',
     image: './recipe-images/grilled.jpg'
   }
-]
+];
+
+const meat = ['meat', 'beef', 'chicken'];
 
 //run function to add all recipes to the page when it loads
 window.addEventListener('DOMContentLoaded', () => {
@@ -233,7 +235,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
 //Insert recipe into HTML with querySelector
 const getRecipe = document.querySelector('#recipe-container');
-
+const filterMenuButton = document.getElementById('filter-menu');
+const dropdownMenu = document.getElementById('filter-dropdown');
+const listItems = document.querySelectorAll('li');
 
 //Make the ingredients in each array item into a list
 const makeList = (ingredientItem) => {
@@ -264,11 +268,39 @@ const displayRecipes = () => {
   getRecipe.innerHTML = recipeContent;
 };
 
+//filter display
+const displayFilteredRecipes = (filteredRecipes) => {
+  let recipeContent = '';
+
+  filteredRecipes.forEach(recipe => {
+    recipeContent += `
+    <article class="recipe">
+      <img src="${recipe.image}" alt="${recipe.name}" />
+      <h3>${recipe.name}</h3>
+      <div class="divider-line"></div>
+      <h4>Cuisine: ${recipe.cuisineType}</h4>
+      <h4 class="cooking-time">${recipe.totalTime} minutes</h4>
+      <div class="divider-line"></div>
+      <h4 class="ingredients-header">Ingredients</h4>
+      <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
+      ${makeList(recipe.ingredients)}
+      </ul>
+      <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
+    </article>
+  `;
+  });
+  document.getElementById('recipe-container').style.display = "block";
+  document.getElementById('randomize-container').style.display = "hide";
+
+  getRecipe.innerHTML = recipeContent;
+};
+
 
 //Randomize-button
 const randomRecipe = () => {
 
   document.getElementById('recipe-container').style.display = "none";
+  document.getElementById('randomize-container').style.display = "block";
 
   const randomItem = recipes[Math.floor(Math.random() * recipes.length)];
 
@@ -296,10 +328,9 @@ const getAllRecipes = () => {
   displayRecipes();
 };
 
-const getDropdownMenu = () => {
-  const filterMenuButton = document.getElementById('filter-menu');
-  const dropdownMenu = document.getElementById('filter-dropdown');
 
+
+const getDropdownMenu = () => {
   filterMenuButton.addEventListener('click', () => {
     if (dropdownMenu.style.display === "block") {
       dropdownMenu.style.display = "none";
@@ -311,21 +342,24 @@ const getDropdownMenu = () => {
 };
 getDropdownMenu();
 
-
-//filter genre
 const getSubmenu = () => {
   const menuItems = document.querySelectorAll('li');
-
+  let currentOpenSubmenu = null;
   menuItems.forEach(item => {
     item.addEventListener('click', (e) => {
       const submenu = item.querySelector('ul');
 
+      //close other submenues if open
+      if (currentOpenSubmenu && currentOpenSubmenu !== submenu) {
+        currentOpenSubmenu.style.display = "none";
+      }
       if (submenu) {
         if (submenu.style.display === "block") {
           submenu.style.display = "none";
         } else {
           submenu.style.display = "block";
         }
+        currentOpenSubmenu = submenu.style.display === "block" ? submenu : null;
       }
       e.stopPropagation();
     });
@@ -333,19 +367,45 @@ const getSubmenu = () => {
 };
 
 getSubmenu();
-/*
-const getCuisineMenu = () => {
-  const cuisineButton = document.getElementById('cuisine-link');
-  const cuisineMenu = document.querySelector('.submenu-cuisine');
 
-  cuisineButton.addEventListener('click', () => {
-    if (cuisineMenu.style.display === "block") {
-      cuisineMenu.style.display = "none";
+
+// close-menu-when-clicking-outside-of-it
+document.addEventListener('click', e => {
+  if (!dropdownMenu.contains(e.target) && e.target !== filterMenuButton) {
+    dropdownMenu.style.display = "none";
+  }
+});
+
+
+//make eventListener on each menu word, and run filter functions
+listItems.forEach(li => {
+  li.addEventListener('click', () => {
+    const currentSearchWord = li.innerHTML.toLowerCase();
+
+    if (currentSearchWord === 'meat') {
+      const filteredRecipes = recipes.filter(recipe => checkForMeat(recipe));
+      displayFilteredRecipes(filteredRecipes);
     } else {
-      cuisineMenu.style.display = "block";
+      filterBy(currentSearchWord);
     }
   });
+});
 
+// Filter by ingredient
+const filterBy = (currentSearchWord) => {
+  const filteredRecipes = recipes.filter(recipe => {
+    return recipe.ingredients.some(ingredient =>
+      ingredient.toLowerCase().includes(currentSearchWord)
+    );
+  });
+  displayFilteredRecipes(filteredRecipes);
 };
-getCuisineMenu();
-*/
+
+
+//Check if the searchword is in the meat array, if the li.innerHTML is 'meat'
+const checkForMeat = (recipe) => {
+  return recipe.ingredients.some(ingredient => {
+    return meat.some(meatWord =>
+      ingredient.toLowerCase().includes(meatWord));
+  });
+};
