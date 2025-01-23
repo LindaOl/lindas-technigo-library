@@ -240,7 +240,14 @@ const filterDropdown = document.getElementById('filter-dropdown');
 const listItems = document.querySelectorAll('#filter-dropdown li');
 const sortItems = document.querySelectorAll('#sort-dropdown li');
 const sortMenuButton = document.getElementById('sort-menu');
+const sortByNameButton = document.getElementById('name');
+const sortByReverseButton = document.getElementById('name-reverse');
+const sortByTimeButton = document.getElementById('time');
+const defaultSortingButton = document.getElementById('default');
+const sortByDecendTimeButton = document.getElementById('time-decend');
 const sortDropdown = document.getElementById('sort-dropdown');
+
+const originalRecipes = [...recipes];
 
 //Make the ingredients in each array item into a list
 const makeList = (ingredientItem) => {
@@ -294,6 +301,29 @@ const displayFilteredRecipes = (filteredRecipes) => {
   });
   document.getElementById('recipe-container').style.display = "block";
   document.getElementById('randomize-container').style.display = "none";
+
+  getRecipe.innerHTML = recipeContent;
+};
+
+const displaySortedRecipes = (sortedRecipes = recipes) => {
+  let recipeContent = '';
+  sortedRecipes.forEach(recipe => {
+    recipeContent += `
+    <article class="recipe">
+      <img src="${recipe.image}" alt="${recipe.name}" />
+      <h3>${recipe.name}</h3>
+      <div class="divider-line"></div>
+      <h4>Cuisine: ${recipe.cuisineType}</h4>
+      <h4 class="cooking-time">${recipe.totalTime} minutes</h4>
+      <div class="divider-line"></div>
+      <h4 class="ingredients-header">Ingredients</h4>
+      <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
+        ${makeList(recipe.ingredients)}
+      </ul>
+      <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
+    </article>
+    `;
+  });
 
   getRecipe.innerHTML = recipeContent;
 };
@@ -460,46 +490,71 @@ const filterByCuisine = (currentSearchWord) => {
 };
 
 //Sorting functions
-const sortedbyTime = sortByKey(recipes, 'totalTime');
-const sortedbyName = sortByKey(recipes, 'name');
 
-const sortByKey = (array, key) => {
-  return array.sort((a, b) => {
-    if (key === 'totalTime') {
-      return (a[key] || 0) - (b[key] || 0);
-    } else {
-      return a[key].localeCompare(b[key]);
-    }
-  });
-};
-sortItems.forEach(li => {
-  li.addEventListener('click', () => {
-    const key = li.innerHTML.toLowerCase().trim() === 'time' ? 'totalTime' : 'name';
-    const sortedRecipesList = sortByKey([...recipes], key);
-    sortedRecipes(sortedRecipesList);
-  });
+
+
+sortByNameButton.addEventListener('click', () => {
+  const sortByName = () => {
+    recipes.sort((a, b) => a.name.localeCompare(b.name));
+  };
+  sortByName();
+  displayRecipes();
+  document.getElementById('sort-dropdown').style.display = "none";
+});
+
+sortByReverseButton.addEventListener('click', () => {
+  const sortByName = () => {
+    recipes.sort((a, b) => b.name.localeCompare(a.name));
+  };
+  sortByName();
+  displayRecipes();
+  document.getElementById('sort-dropdown').style.display = "none";
 });
 
 
-const sortedRecipes = (sortedRecipesList) => {
-  let recipeContent = '';
-  sortedRecipesList.forEach(recipe => {
-    recipeContent += `
-      <article class="recipe">
-        <img src="${recipe.image}" alt="${recipe.name}" />
-        <h3>${recipe.name}</h3>
-        <div class="divider-line"></div>
-        <h4>Cuisine: ${recipe.cuisineType}</h4>
-        <h4 class="cooking-time">${recipe.totalTime} minutes</h4>
-        <div class="divider-line"></div>
-        <h4 class="ingredients-header">Ingredients</h4>
-        <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
-          ${recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
-        </ul>
-        <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
-      </article>
-    `;
-  });
-  getRecipe.innerHTML = recipeContent;
+recipes.forEach(recipe => {
+  if (isNaN(recipe.totalTime)) {
+    recipe.totalTime = 0;
+  };
+})
+const sortByTime = (array) => {
+  return array.toSorted((a, b) => a.totalTime - b.totalTime);
 };
+
+sortByTimeButton.addEventListener('click', () => {
+  const sortedRecipes = sortByTime([...recipes]);
+  displaySortedRecipes(sortedRecipes);
+  document.getElementById('sort-dropdown').style.display = "none";
+});
+
+
+const sortByTimeDecend = (array) => {
+  return array.toSorted((a, b) => b.totalTime - a.totalTime);
+};
+
+sortByDecendTimeButton.addEventListener('click', () => {
+  const sortedRecipes = sortByTimeDecend([...recipes]);
+  displaySortedRecipes(sortedRecipes);
+  document.getElementById('sort-dropdown').style.display = "none";
+});
+
+defaultSortingButton.addEventListener('click', () => {
+  recipes.length = 0;
+  recipes.push(...originalRecipes);
+  displayRecipes();
+  document.getElementById('sort-dropdown').style.display = "none";
+});
+
+
+document.addEventListener('click', e => {
+  if (!sortDropdown.contains(e.target) && e.target !== sortMenuButton) {
+    sortDropdown.style.display = "none";
+  }
+});
+
+
+
+
+
+
 
