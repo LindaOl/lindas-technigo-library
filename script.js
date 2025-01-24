@@ -247,6 +247,7 @@ const defaultSortingButton = document.getElementById('default');
 const sortByDecendTimeButton = document.getElementById('time-decend');
 const sortDropdown = document.getElementById('sort-dropdown');
 
+
 const originalRecipes = [...recipes];
 
 //Make the ingredients in each array item into a list
