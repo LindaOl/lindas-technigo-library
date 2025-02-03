@@ -555,6 +555,39 @@ document.addEventListener('click', e => {
 
 
 
+/*Search for input in recipes*/
+
+const searchRecipes = () => {
+  const searchByInput = document.getElementById('searchbar').value.toLowerCase();
+
+  const filterBySearch = recipes.filter(recipe => {
+    const nameMatch = recipe.name.toLocaleLowerCase().includes(searchByInput);
+
+    const cuisines = Array.isArray(recipe.cuisineType) ? recipe.cuisineType : [recipe.cuisineType];
+    const cuisineMatch = cuisines.some(cuisine =>
+      cuisine.toLowerCase().includes(searchByInput)
+    );
+
+    const ingredientsMatch = recipe.ingredients.some(ingredient =>
+      ingredient.toLowerCase().includes(searchByInput)
+    );
+
+    return nameMatch || cuisineMatch || ingredientsMatch;
+  })
+  document.getElementById('searchbar').value = '';
+  displayFilteredRecipes(filterBySearch);
+};
+
+document.getElementById('searchbar').addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    searchRecipes();
+  }
+});
+
+
+
+
 
 
 

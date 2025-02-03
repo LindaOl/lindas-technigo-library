@@ -6,7 +6,8 @@
   --nav-link-text-color: #217e9a;
   --menu-background: rgb(220, 220, 220);
   --search-font: "Arial", "Helvetica", sans-serif;
-  --padding-search: 14px;
+  --padding-search: 5px;
+  --searchbar-bg-color: #f6f6f6;
 }
 
 html {
@@ -27,14 +28,7 @@ body {
   font-family: var(--font-family-sans-serif);
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto auto auto 1fr auto;
-  grid-template-areas:
-    "header"
-    "navbar"
-    "filtersSort"
-    "main"
-    "footer";
-  overflow-x: hidden;
+
 }
 
 
@@ -42,7 +36,7 @@ body {
 header,
 nav,
 .filters {
-  background-color: #FEFEF7;
+  background-color: var(--background-main);
   padding: 5px 0;
   width: 100%;
 }
@@ -50,11 +44,12 @@ nav,
 header {
   display: flex;
   padding: 5px 20px;
-  background-color: #FEFEF7;
+  background-color: var(--background-main);
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid #e8e8e8;
-  grid-area: header;
+  grid-column: 1 / 2;
+  overflow-x: hidden
 }
 
 .title {
@@ -81,14 +76,16 @@ header img {
 }
 
 .search {
-  width: max-content;
   display: inline-flex;
   align-items: center;
   padding: var(--padding-search);
   border-radius: 28px;
-  background-color: #f6f6f6;
-  max-width: 200px;
-  height: 35px;
+  background-color: var(--searchbar-bg-color);
+  width: 100%;
+  max-width: 140px;
+
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 #searchbar {
@@ -97,16 +94,24 @@ header img {
 
 
 .search-input {
-  font-size: 13px;
+  font-size: 16px;
+  flex-grow: 1;
   color: #333;
   margin-left: var(--padding-search);
   outline: none;
   border: none;
   background-color: transparent;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.search span {
+  margin-right: 5px;
 }
 
 nav {
-  grid-area: navbar;
+  grid-column: 1 / 2;
 }
 
 nav ul {
@@ -129,7 +134,7 @@ nav a:hover {
 
 
 .filters {
-  grid-area: filtersSort;
+  grid-column: 1 / 2;
   flex-direction: column;
   align-items: center;
   display: flex;
@@ -229,7 +234,7 @@ ul.submenu-ingredients li {
 
 
 main {
-  grid-area: main;
+  grid-column: 1 / 2;
   padding: 0px 1rem;
   width: 100%;
 }
@@ -304,6 +309,6 @@ main {
 }
 
 footer {
-  grid-area: footer;
+  grid-column: 5 / 6;
   width: 100%;
 }
