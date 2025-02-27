@@ -177,10 +177,15 @@ nav a:hover {
   filter: drop-shadow(1px 1px 1px rgba(137, 137, 137, 0.5));
   color: white;
   z-index: 10;
-  width: 100%;
-  max-width: 120px;
+  min-width: 120px;
+  /* You can adjust the minimum width as needed */
   cursor: pointer;
   padding: 3px;
+
+}
+
+#sort-dropdown {
+  transform: translateX(75%);
 }
 
 #sort-dropdown img {
@@ -216,7 +221,8 @@ ul.submenu-ingredients {
   left: 95px;
   display: none;
   background-color: var(--menu-background);
-  width: 100%;
+  width: auto;
+  min-width: 100%;
 }
 
 ul.submenu-ingredients {
@@ -229,12 +235,10 @@ ul.submenu-ingredients li {
   cursor: pointer;
   background-color: var(--nav-link-text-color);
   color: white;
-  width: 110px;
+  width: auto;
   margin-left: auto;
   margin-right: auto;
 }
-
-
 
 
 
@@ -332,7 +336,6 @@ footer {
 @media screen and (min-width: 668px) and (max-width: 1023px) {
 
   body {
-    display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
@@ -348,11 +351,41 @@ footer {
 
 /*Media query for desktop, at least 1024px*/
 @media screen and (min-width: 1024px) {
-  #recipe-container {
+
+  main {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(7, 1fr);
     gap: 20px;
   }
 
+  #recipe-container {
+    margin-top: 30px;
+    display: grid;
+    grid-column-start: 2;
+    grid-column-end: 7;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
 
+  }
+
+  #randomize-container {
+    padding-top: 30px;
+    display: grid;
+    grid-column-start: 3;
+    grid-column-end: 6;
+    gap: 30px;
+    border-radius: 25px;
+  }
+
+
+  .recipe {
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  .recipe img {
+    aspect-ratio: 10 / 8;
+
+
+  }
 }

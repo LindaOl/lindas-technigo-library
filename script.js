@@ -232,20 +232,19 @@ window.addEventListener('DOMContentLoaded', () => {
   displayRecipes();
 });
 
-
-
-//Insert recipe into HTML with querySelector
 const recipeContainer = document.querySelector('#recipe-container');
 const filterMenuButton = document.getElementById('filter-menu');
 const filterDropdown = document.getElementById('filter-dropdown');
-const listItems = document.querySelectorAll('#filter-dropdown li');
-const sortItems = document.querySelectorAll('#sort-dropdown li');
 const sortMenuButton = document.getElementById('sort-menu');
+const sortDropdown = document.getElementById('sort-dropdown');
+const sortItems = document.querySelectorAll('#sort-dropdown li');
+const listItems = document.querySelectorAll('#filter-dropdown li');
+
 const sortByNameButton = document.getElementById('name');
 const sortByReverseButton = document.getElementById('name-reverse');
 const sortByTimeButton = document.getElementById('time');
 const sortByDecendTimeButton = document.getElementById('time-decend');
-let sortByMostButton = document.getElementById('most-ingredients');
+const sortByMostButton = document.getElementById('most-ingredients');
 const sortByLeastButton = document.getElementById('least-ingredients');
 const sortButtons = [
   sortByLeastButton,
@@ -255,168 +254,63 @@ const sortButtons = [
   sortByNameButton,
   sortByReverseButton
 ];
-const sortDropdown = document.getElementById('sort-dropdown');
-const xIcon = document.getElementById('icon');
-const originalRecipes = [...recipes];
+
+const icon = document.createElement('img');
+icon.src = './recipe-images/x_circle_icon.png';
+icon.alt = 'icon';
+icon.style.marginRight = '3px';
+icon.id = 'icon'
+
 const originalHTML = Array.from(sortItems).map(item => item.innerHTML);
+const originalID = Array.from(sortItems).map(item => item.id);
 let currentDisplayedRecipes = [...recipes];
+let currentLinkClicked = null;
+
+const getDefaultLinkText = () => {
+  sortItems.forEach((item, index) => {
+    item.innerHTML = originalHTML[index];
+  });
+  sortButtons.forEach(button => {
+    button.style.paddingLeft = "10px";
+  });
+};
+
+const getDefaultSorting = () => {
+  displaySortedRecipes(currentDisplayedRecipes);
+};
+
+const resetOtherButtons = (buttonToKeepActive) => {
+  sortItems.forEach((item, index) => {
+    if (item !== buttonToKeepActive) {
+      item.id = originalID[index];
+      item.style.paddingLeft = "10px";
+    }
+  });
+};
 
 
-
-//Make the ingredients in each array item into a list
 const makeList = (ingredientItem) => {
   return ingredientItem.map(ingredient => `<li>${ingredient}</li>`).join('');
 };
 
-
-
-const displayEntireRecipe = () => {
-  let recipeContent = '';
-  recipes.forEach(recipe => {
-    recipeContent += `
-    <article class="recipe">
-      <img src="${recipe.image}" alt="${recipe.name}" />
-      <h3>${recipe.name}</h3>
-      <div class="divider-line"></div>
-      <h4>Cuisine: ${recipe.cuisineType}</h4>
-      <h4 class="cooking-time">${recipe.totalTime} minutes</h4>
-      <div class="divider-line"></div>
-      <h4 class="ingredients-header">Ingredients</h4>
-      <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
-      ${makeList(recipe.ingredients)}
-      </ul>
-      <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
-    </article>
-  `;
-  });
-  document.getElementById('recipe-container').style.display = "none";
-  document.getElementById('randomize-container').style.display = "block";
-  document.getElementById('randomize-container').innerHTML = recipeContent;
-  sortDropdown.style.display = "none";
+recipes.forEach(recipe => {
+  if (isNaN(recipe.totalTime)) {
+    recipe.totalTime = 0;
+  };
+});
+const sortByTime = (array) => {
+  return array.toSorted((a, b) => a.totalTime - b.totalTime);
 };
 
-
-//Main library, all recipes displayed
-const displayRecipes = () => {
-  let recipeContent = '';
-  recipes.forEach(recipe => {
-    recipeContent += `
-    <article class="recipe">
-      <img src="${recipe.image}" alt="${recipe.name}" />
-      <h3>${recipe.name}</h3>
-      <div class="divider-line"></div>
-      <h4>Cuisine: ${recipe.cuisineType}</h4>
-      <h4 class="cooking-time">${recipe.totalTime} minutes</h4>
-      <div class="divider-line"></div>
-      <h4 class="ingredients-header">Ingredients</h4>
-      <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
-      ${makeList(recipe.ingredients)}
-      </ul>
-      <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
-    </article>
-  `;
-  });
-  recipeContainer.innerHTML = recipeContent;
-
-  recipeContainer.addEventListener('click', (event) => {
-    // Check if the clicked element is an article
-    const article = event.target.closest('article');
-    if (article) {
-      console.log('Article clicked!', article);
-      displayEntireRecipe(article.index);
-    }
-  });
-  sortDropdown.style.display = "none";
+const countIngredients = (recipe) => {
+  return recipe.ingredients.length;
 };
 
-//filter display
-const displayFilteredRecipes = (filteredRecipes) => {
-  let recipeContent = '';
-  filteredRecipes.forEach(recipe => {
-    recipeContent += `
-    <article class="recipe">
-      <img src="${recipe.image}" alt="${recipe.name}" />
-      <h3>${recipe.name}</h3>
-      <div class="divider-line"></div>
-      <h4>Cuisine: ${recipe.cuisineType}</h4>
-      <h4 class="cooking-time">${recipe.totalTime} minutes</h4>
-      <div class="divider-line"></div>
-      <h4 class="ingredients-header">Ingredients</h4>
-      <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
-      ${makeList(recipe.ingredients)}
-      </ul>
-      <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
-    </article>
-  `;
-  });
-  document.getElementById('recipe-container').style.display = "grid";
-  document.getElementById('randomize-container').style.display = "none";
-  recipeContainer.innerHTML = recipeContent;
-
-  recipeContainer.addEventListener('click', (event) => {
-    // Check if the clicked element is an article
-    const article = event.target.closest('article');
-    if (article) {
-      console.log('Article clicked!', article);
-    }
-  });
-  sortDropdown.style.display = "none";
+const sortByMost = (array) => {
+  return array.toSorted((a, b) => countIngredients(b) - countIngredients(a));
 };
-
-const displaySortedRecipes = (sortedRecipes = recipes) => {
-  let recipeContent = '';
-  sortedRecipes.forEach(recipe => {
-    recipeContent += `
-    <article class="recipe">
-      <img src="${recipe.image}" alt="${recipe.name}" />
-      <h3>${recipe.name}</h3>
-      <div class="divider-line"></div>
-      <h4>Cuisine: ${recipe.cuisineType}</h4>
-      <h4 class="cooking-time">${recipe.totalTime} minutes</h4>
-      <div class="divider-line"></div>
-      <h4 class="ingredients-header">Ingredients</h4>
-      <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
-        ${makeList(recipe.ingredients)}
-      </ul>
-      <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
-    </article>
-    `;
-  });
-  recipeContainer.innerHTML = recipeContent;
-  sortDropdown.style.display = "none";
-};
-
-
-//Randomize-button
-const randomRecipe = () => {
-  document.getElementById('recipe-container').style.display = "none";
-  document.getElementById('randomize-container').style.display = "block";
-  const randomItem = recipes[Math.floor(Math.random() * recipes.length)];
-
-  document.getElementById('randomize-container').innerHTML = `
-      <article class="recipe">
-      <img src="${randomItem.image}" alt="${randomItem.name}" />
-      <h3>${randomItem.name}</h3>
-      <div class="divider-line"></div>
-      <h4>Cuisine: ${randomItem.cuisineType}</h4>
-      <h4 class="cooking-time">${randomItem.totalTime} minutes</h4>
-      <div class="divider-line"></div>
-      <h4 class="ingredients-header">Ingredients</h4>
-      <ul id="html-list-${randomItem.name.replace(/\s+/g, '-')}" class="ingredients-list">
-      ${makeList(randomItem.ingredients)}
-      </ul>
-      <h5>Source: <a href="${randomItem.url}">${randomItem.source}</a></h5>
-    </article>`
-  sortDropdown.style.display = "none";
-};
-
-//filter buttons
-
-const getAllRecipes = () => {
-  document.getElementById('recipe-container').style.display = "grid";
-  document.getElementById('randomize-container').style.display = "none";
-  displayRecipes();
-  sortDropdown.style.display = "none";
+const sortByLeast = (array) => {
+  return array.toSorted((a, b) => countIngredients(a) - countIngredients(b));
 };
 
 const toggleFilterDropdown = () => {
@@ -440,14 +334,10 @@ const toggleSortDropdown = () => {
 filterMenuButton.addEventListener('click', toggleFilterDropdown);
 sortMenuButton.addEventListener('click', toggleSortDropdown);
 
-document.addEventListener('click', (e) => {
-  if (!filterDropdown.contains(e.target) && e.target !== filterMenuButton) {
-    filterDropdown.style.display = "none";
-  }
-  if (!sortDropdown.contains(e.target) && e.target !== sortMenuButton) {
-    sortDropdown.style.display = "none";
-  }
+document.getElementById('filtering-all').addEventListener('click', () => {
+  getAllRecipes();
 });
+
 
 const getSubmenu = () => {
   const menuItems = document.querySelectorAll('li');
@@ -471,16 +361,10 @@ const getSubmenu = () => {
     });
   });
 };
-
 getSubmenu();
 
 
-// close-menu-when-clicking-outside-of-it
-document.addEventListener('click', e => {
-  if (!filterDropdown.contains(e.target) && e.target !== filterMenuButton) {
-    filterDropdown.style.display = "none";
-  }
-});
+
 
 //Check if the searchword is a word in the meat array
 const checkForMeat = (recipe) => {
@@ -504,6 +388,8 @@ listItems.forEach(li => {
         filterByIngredient(currentSearchWord);
         document.getElementById('filter-dropdown').style.display = "none";
       }
+      getDefaultLinkText();
+      resetOtherButtons();
     });
   }
 });
@@ -514,7 +400,9 @@ const filterByIngredient = (currentSearchWord) => {
       ingredient.toLowerCase().includes(currentSearchWord)
     );
   });
-  displayFilteredRecipes(currentDisplayedRecipes);  // Use currentDisplayedRecipes for display
+  displayFilteredRecipes(currentDisplayedRecipes);
+  getDefaultLinkText();
+  resetOtherButtons();
 };
 
 
@@ -537,6 +425,8 @@ const filterByCuisine = (currentSearchWord) => {
     );
   });
   displayFilteredRecipes(currentDisplayedRecipes);
+  getDefaultLinkText();
+  resetOtherButtons();
 };
 
 //Sorting functions
@@ -550,12 +440,16 @@ sortByNameButton.addEventListener('click', (event) => {
     event.target.insertBefore(icon, event.target.firstChild);
     event.target.style = "padding-left: 0px;";
     sortByNameButton.id = 'activeName';
+    resetOtherButtons(sortByNameButton);
   } else {
     getDefaultSorting();
     getDefaultLinkText();
+    resetOtherButtons();
   };
 
+
 });
+
 
 sortByReverseButton.addEventListener('click', (event) => {
   if (sortByReverseButton.id === 'name-reverse') {
@@ -567,21 +461,13 @@ sortByReverseButton.addEventListener('click', (event) => {
     event.target.insertBefore(icon, event.target.firstChild);
     event.target.style = "padding-left: 0px;";
     sortByReverseButton.id = 'activeReverse';
+    resetOtherButtons(sortByReverseButton);
   } else {
     getDefaultSorting();
     getDefaultLinkText();
+    resetOtherButtons();
   };
 });
-
-
-recipes.forEach(recipe => {
-  if (isNaN(recipe.totalTime)) {
-    recipe.totalTime = 0;
-  };
-});
-const sortByTime = (array) => {
-  return array.toSorted((a, b) => a.totalTime - b.totalTime);
-};
 
 sortByTimeButton.addEventListener('click', (event) => {
   if (sortByTimeButton.id === 'time') {
@@ -590,11 +476,14 @@ sortByTimeButton.addEventListener('click', (event) => {
     event.target.insertBefore(icon, event.target.firstChild);
     event.target.style = "padding-left: 0px;";
     sortByTimeButton.id = 'activeTime';
+    resetOtherButtons(sortByTimeButton);
   } else {
     getDefaultSorting();
     getDefaultLinkText();
+    resetOtherButtons();
   };
 });
+
 
 
 const sortByTimeDecend = (array) => {
@@ -608,114 +497,43 @@ sortByDecendTimeButton.addEventListener('click', (event) => {
     event.target.insertBefore(icon, event.target.firstChild);
     event.target.style = "padding-left: 0px;";
     sortByDecendTimeButton.id = 'activeDecend';
+    resetOtherButtons(sortByDecendTimeButton);
   } else {
     getDefaultSorting();
     getDefaultLinkText();
+    resetOtherButtons();
   }
 });
-
-
-document.addEventListener('click', e => {
-  if (!sortDropdown.contains(e.target) && e.target !== sortMenuButton) {
-    sortDropdown.style.display = "none";
-  }
-});
-
-const countIngredients = (recipe) => {
-  return recipe.ingredients.length;
-};
-
-const sortByMost = (array) => {
-  return array.toSorted((a, b) => countIngredients(b) - countIngredients(a));
-};
-const sortByLeast = (array) => {
-  return array.toSorted((a, b) => countIngredients(a) - countIngredients(b));
-};
-
-
-const getDefaultLinkText = () => {
-  sortItems.forEach((item, index) => {
-    item.innerHTML = originalHTML[index];
-  });
-  sortButtons.forEach(button => {
-    button.style.paddingLeft = "10px";
-  });
-};
-
-const getDefaultSorting = () => {
-  displaySortedRecipes(currentDisplayedRecipes);
-};
 
 sortByMostButton.addEventListener('click', (event) => {
-  if (sortByMostButton.id === 'most-ingredients') {
+  if (event.target.id === 'most-ingredients') {
     const sortedByMost = sortByMost([...currentDisplayedRecipes]);
     displaySortedRecipes(sortedByMost);
     sortByMostButton.id = 'activeSortByMost';
     event.target.insertBefore(icon, event.target.firstChild);
     event.target.style = "padding-left: 0px;";
+    resetOtherButtons(sortByMostButton);
   } else {
-    sortByMostButton.id = 'most-ingredients';
     getDefaultSorting();
     getDefaultLinkText();
+    resetOtherButtons();
   };
 });
 
-
 sortByLeastButton.addEventListener('click', (event) => {
-  if (event.target && event.target.id !== 'icon') {
+  if (event.target.id === 'least-ingredients') {
     const sortedByLeast = sortByLeast([...currentDisplayedRecipes]);
     displaySortedRecipes(sortedByLeast);
+    sortByLeastButton.id = 'activeSortByLeast';
     event.target.insertBefore(icon, event.target.firstChild);
     event.target.style = "padding-left: 0px;";
-  } else if (event.target || event.target.id === 'icon') {
+    resetOtherButtons(sortByLeastButton);
+  } else {
     getDefaultSorting();
     getDefaultLinkText();
+    resetOtherButtons();
   };
 });
-
-
-
-/*
-sortByLeastButton.addEventListener('click', (event) => {
-  if (event.target && event.target.id !== 'icon') {
-    displaySortedRecipes(sortedByLeast);
-    let sortByMostButton = document.getElementById('least-ingredients');
-    sortByLeastButton.id = 'activeSortByLeast';
-    document.getElementById('sort-dropdown').style.display = "none";
-    sortByLeastButton.innerHTML = `<img src="./recipe-images/x_circle_icon.png" alt="icon" style="margin-right: 3px;" id="icon" /> Least Ingredients`;
-    sortByLeastButton.style = "padding-left: 0px;";
-  } else if (event.target || event.target.id === 'icon') {
-    let sortByLeastButton = document.getElementById('activeSortByLeast');
-    sortByLeastButton.id = 'least-ingredients';
-    recipes.length = 0;
-    recipes.push(...originalRecipes);
-    displayRecipes();
-    sortByLeastButton.innerHTML = `Least Ingredients`;
-    document.getElementById('sort-dropdown').style.display = "none";
-    sortByLeastButton.style = "padding-left: 10px;";
-  };
-});
-*/
-
-
-/*
- 
-if (xIcon) {
-  xIcon.addEventListener('click', () => {
-    let sortByMostButton = document.getElementById('activeSortByMost');
-    sortByMostButton.id = 'most-ingredients';
-    recipes.length = 0;
-    recipes.push(...originalRecipes);
-    displayRecipes();
-    sortByMostButton.innerHTML = `Most Ingredients`;
-    document.getElementById('sort-dropdown').style.display = "none";
-    sortByMostButton.style = "padding-left: 10px;";
-    console.log("Icon clicked");
- 
-  });
-}
-*/
-/*Search for input in recipes*/
 
 const searchRecipes = () => {
   const searchByInput = document.getElementById('searchbar').value.toLowerCase();
@@ -744,14 +562,121 @@ document.getElementById('searchbar').addEventListener('keydown', (event) => {
 
 
 
+const generateContent = (recipes) => {
+  return recipes.map(recipe => {
+    return `
+      <article class="recipe">
+        <img src="${recipe.image}" alt="${recipe.name}" />
+        <h3>${recipe.name}</h3>
+        <div class="divider-line"></div>
+        <h4>Cuisine: ${recipe.cuisineType}</h4>
+        <h4 class="cooking-time">Prep time: ${recipe.totalTime} minutes</h4>
+        <div class="divider-line"></div>
+        <h4 class="ingredients-header">Ingredients</h4>
+        <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
+          ${makeList(recipe.ingredients)}
+        </ul>
+        <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
+      </article>
+    `;
+  }).join('');  // Join the array into a single string for HTML insertion
+};
 
-const icon = document.createElement('img');
-icon.src = './recipe-images/x_circle_icon.png';
-icon.alt = 'icon';
-icon.style.marginRight = '3px';
-icon.id = 'icon'
+//Main library, all recipes displayed
+const displayRecipes = () => {
+  let recipeContent = generateContent(recipes);
+  recipeContainer.innerHTML = recipeContent;
+  recipeContainer.addEventListener('click', (event) => {
+    // Check if the clicked element is an article
+    const article = event.target.closest('article');
+    if (article) {
+      const recipeIndex = article.getAttribute('data-index');
+      console.log('Article clicked using displayRecipes!', article);
+      displaySelectedRecipe(recipeIndex);
+    }
+  });
+  sortDropdown.style.display = "none";
+
+};
+
+const displaySelectedRecipe = () => {
+  let recipeContent = '';
+  recipes.forEach(recipe => {
+    recipeContent += `
+    <article class="recipe">
+      <img src="${recipe.image}" alt="${recipe.name}" />
+      <h3>${recipe.name}</h3>
+      <div class="divider-line"></div>
+      <h4>Cuisine: ${recipe.cuisineType}</h4>
+      <h4 class="cooking-time">${recipe.totalTime} minutes</h4>
+      <div class="divider-line"></div>
+      <h4 class="ingredients-header">Ingredients</h4>
+      <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
+      ${makeList(recipe.ingredients)}
+      </ul>
+      <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
+    </article>
+  `;
+  });
+  document.getElementById('recipe-container').style.display = "none";
+  document.getElementById('randomize-container').style.display = "block";
+  document.getElementById('randomize-container').innerHTML = recipeContent;
+  sortDropdown.style.display = "none";
+};
+
+//filter display
+const displayFilteredRecipes = (filteredRecipes) => {
+  let recipeContent = generateContent(filteredRecipes)
+  document.getElementById('recipe-container').style.display = "grid";
+  document.getElementById('randomize-container').style.display = "none";
+  recipeContainer.innerHTML = recipeContent;
+
+  recipeContainer.addEventListener('click', (event) => {
+    // Check if the clicked element is an article
+    const article = event.target.closest('article');
+    if (article) {
+      console.log('Article clicked!', article);
+    }
+  });
+  sortDropdown.style.display = "none";
+};
+
+const displaySortedRecipes = (sortedRecipes = recipes) => {
+  let recipeContent = generateContent(sortedRecipes);
+  recipeContainer.innerHTML = recipeContent;
+  sortDropdown.style.display = "none";
+};
 
 
+//Randomize-button
+const randomRecipe = () => {
+  document.getElementById('recipe-container').style.display = "none";
+  document.getElementById('randomize-container').style.display = "block";
+  const randomItem = recipes[Math.floor(Math.random() * recipes.length)];
 
-let currentLinkClicked = null;
+  document.getElementById('randomize-container').innerHTML = `
+      <article class="recipe">
+      <img src="${randomItem.image}" alt="${randomItem.name}" />
+      <h3>${randomItem.name}</h3>
+      <div class="divider-line"></div>
+      <h4>Cuisine: ${randomItem.cuisineType}</h4>
+      <h4 class="cooking-time">${randomItem.totalTime} minutes</h4>
+      <div class="divider-line"></div>
+      <h4 class="ingredients-header">Ingredients</h4>
+      <ul id="html-list-${randomItem.name.replace(/\s+/g, '-')}" class="ingredients-list">
+      ${makeList(randomItem.ingredients)}
+      </ul>
+      <h5>Source: <a href="${randomItem.url}">${randomItem.source}</a></h5>
+    </article>`
+  sortDropdown.style.display = "none";
+};
+
+const getAllRecipes = () => {
+  document.getElementById('recipe-container').style.display = "grid";
+  document.getElementById('randomize-container').style.display = "none";
+  displayRecipes();
+  sortDropdown.style.display = "none";
+};
+
+
 
