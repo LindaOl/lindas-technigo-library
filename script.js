@@ -230,6 +230,7 @@ const meat = ['meat', 'beef', 'chicken'];
 //run function to add all recipes to the page when it loads
 window.addEventListener('DOMContentLoaded', () => {
   displayRecipes();
+  loadDocumentCloseListener();
 });
 
 const recipeContainer = document.querySelector('#recipe-container');
@@ -331,17 +332,32 @@ const toggleSortDropdown = () => {
   }
 };
 
+const loadDocumentCloseListener = () => {
+  document.addEventListener('click', e => {
+    if (!filterDropdown.contains(e.target) && e.target !== filterMenuButton) {
+      filterDropdown.style.display = "none";
+    };
+
+    if (!sortDropdown.contains(e.target) && e.target !== sortMenuButton) {
+      sortDropdown.style.display = "none";
+    }
+  });
+};
+
+
 filterMenuButton.addEventListener('click', toggleFilterDropdown);
 sortMenuButton.addEventListener('click', toggleSortDropdown);
 
 document.getElementById('filtering-all').addEventListener('click', () => {
   getAllRecipes();
+  getDefaultLinkText();
 });
 
 
 const getSubmenu = () => {
   const menuItems = document.querySelectorAll('li');
   let currentOpenSubmenu = null;
+
   menuItems.forEach(item => {
     item.addEventListener('click', (e) => {
       const submenu = item.querySelector('ul');
@@ -406,7 +422,6 @@ const filterByIngredient = (currentSearchWord) => {
 };
 
 
-//filter by cuisine
 listItems.forEach(li => {
   if (li.classList.contains('submenu-item-c')) {
     li.addEventListener('click', () => {
@@ -446,8 +461,6 @@ sortByNameButton.addEventListener('click', (event) => {
     getDefaultLinkText();
     resetOtherButtons();
   };
-
-
 });
 
 
@@ -483,8 +496,6 @@ sortByTimeButton.addEventListener('click', (event) => {
     resetOtherButtons();
   };
 });
-
-
 
 const sortByTimeDecend = (array) => {
   return array.toSorted((a, b) => b.totalTime - a.totalTime);
@@ -596,7 +607,6 @@ const displayRecipes = () => {
     }
   });
   sortDropdown.style.display = "none";
-
 };
 
 const displaySelectedRecipe = () => {
