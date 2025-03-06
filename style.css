@@ -1,9 +1,9 @@
 :root {
-  --background-main: #FEFEF7;
-  --background-button: #B8E7E8;
+  --background-main: white;
+  --background-button: #b0eab0;
   --font-family-sans-serif: "Roboto", "Helvetica", sans-serif;
   --font-family-serif: "Frank Ruhl Libre", Georgia, serif;
-  --nav-link-text-color: #217e9a;
+  --nav-link-text-color: #336a34;
   --menu-background: rgb(220, 220, 220);
   --search-font: "Arial", "Helvetica", sans-serif;
   --padding-search: 5px;
@@ -14,7 +14,7 @@ html {
   font-size: 16px;
 }
 
-/* universal selector */
+/* universal selector 78af76 b0eab0 */
 * {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -28,6 +28,7 @@ body {
   font-family: var(--font-family-sans-serif);
   display: grid;
   grid-template-columns: 1fr;
+  font-size: 16px;
 }
 
 
@@ -51,6 +52,10 @@ header {
   overflow-x: hidden
 }
 
+.filter-and-sort img {
+  display: none;
+}
+
 .title {
   background-color: #FEFEF7;
   display: inline-flex;
@@ -68,8 +73,9 @@ header img {
   width: auto;
 }
 
-.form-search1,
-.form-search2 {
+
+
+.form-search1 {
   display: flex;
   align-items: center;
   justify-content: end;
@@ -78,8 +84,14 @@ header img {
 }
 
 .form-search2 {
+  width: 60%;
+  padding: 120px 30px 30px 30px;
+  display: flex;
+  align-items: center;
   display: none;
 }
+
+
 
 .search {
   display: inline-flex;
@@ -393,17 +405,15 @@ footer {
   }
 
   .filters {
-    background-image: url(recipe-images/hero-image.jpg);
-    object-fit: contain;
-    object-position: center;
+    background-image: url(recipe-images/hero-img.jpg);
+    object-fit: cover;
+    object-position: bottom;
   }
 
-  .form-search2 {
-    width: 100%;
-    padding: 120px 30px 30px 30px;
-  }
 
-  /*How to make it so the articles beneath don't overlap */
+
+  .recipe {}
+
 
   .search {
     filter: drop-shadow(2px 2px 2px rgba(137, 137, 137, 1));
@@ -441,18 +451,25 @@ footer {
 
   }
 
+  #recipe-container img {
+    border-radius: 10px 10px 0 0;
+  }
+
   #randomize-container {
     padding-top: 30px;
     display: grid;
     grid-column-start: 1;
     grid-column-end: 3;
     gap: 30px;
-    border-radius: 25px;
-
   }
 
   .recipe {
     z-index: 3;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .recipe img {
+    object-fit: cover;
   }
 
   .recipe h3,
@@ -467,6 +484,7 @@ footer {
 
   .recipe img {
     aspect-ratio: 16 / 9;
+
   }
 }
 
@@ -474,41 +492,106 @@ footer {
 /*Media query for desktop, at least 1024px*/
 @media screen and (min-width: 1024px) {
 
+  body {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "header nav"
+      "filters filters"
+      "main main"
+      "footer footer"
+    ;
+  }
+
   main {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-area: main;
+    padding: 0 10px;
+  }
+
+  .filter-and-sort {
+    height: 40vhs;
+  }
+
+  nav {
+    grid-area: nav;
+    display: flex;
+
+    align-items: end;
+  }
+
+  nav ul {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    padding-bottom: 20px;
+  }
+
+  .filters {
+    grid-area: filters;
+    display: flex;
+    height: 40vh;
+    background-image: url(recipe-images/hero-img.jpg);
+    background-position: center;
+    justify-content: end;
+  }
+
+  .filters img {}
+
+  .form-search2 {
+    display: block;
+  }
+
+  .form-search1 {
+    display: none;
   }
 
   #recipe-container {
     margin-top: 30px;
     display: grid;
-    grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-start: 1;
+    grid-column-end: 5;
     grid-template-columns: repeat(4, 1fr);
     gap: 30px;
+  }
 
+  #recipe-container img {
+    border-radius: 10px 10px 0 0;
   }
 
   #randomize-container {
     padding-top: 30px;
-    display: grid;
-    grid-column-start: 3;
-    grid-column-end: 6;
-    gap: 30px;
-    border-radius: 25px;
+    grid-column-start: 1;
+    grid-column-end: 5;
+
+  }
+
+  #randomize-container img {
+    aspect-ratio: 21 / 9;
+
   }
 
 
   .recipe {
-    border-radius: 15px;
-    overflow: hidden;
+    z-index: 3;
+    border-radius: 10px 10px 0 0;
   }
 
-  .recipe img {
-    aspect-ratio: 10 / 8;
+  #recipe-container img {
+    aspect-ratio: 4 / 3;
+  }
 
+  .recipe {
+    font-size: 1.2em;
+    letter-spacing: 1.3px;
+  }
 
+  .recipe h3 {
+    font-size: 1.4em;
+  }
+
+  .recipe h4 {
+    font-size: 1.5em;
   }
 
 

@@ -256,11 +256,15 @@ const sortButtons = [
   sortByReverseButton
 ];
 
+
+
 const icon = document.createElement('img');
 icon.src = './recipe-images/x_circle_icon.png';
 icon.alt = 'icon';
 icon.style.marginRight = '3px';
 icon.id = 'icon'
+
+const article = document.createElement('article');
 
 const originalHTML = Array.from(sortItems).map(item => item.innerHTML);
 const originalID = Array.from(sortItems).map(item => item.id);
@@ -299,6 +303,7 @@ recipes.forEach(recipe => {
     recipe.totalTime = 0;
   };
 });
+
 const sortByTime = (array) => {
   return array.toSorted((a, b) => a.totalTime - b.totalTime);
 };
@@ -378,8 +383,6 @@ const getSubmenu = () => {
   });
 };
 getSubmenu();
-
-
 
 
 //Check if the searchword is a word in the meat array
@@ -546,6 +549,7 @@ sortByLeastButton.addEventListener('click', (event) => {
   };
 });
 
+
 const searchRecipes = () => {
   const searchByInput = document.getElementById('searchbar').value.toLowerCase();
   const filterBySearch = recipes.filter(recipe => {
@@ -572,11 +576,24 @@ document.getElementById('searchbar').addEventListener('keydown', (event) => {
 });
 
 
+recipes.forEach((recipe, index) => {
+  recipe.idNumber = index + 1;
+  article.setAttribute('data-id', recipe.idNumber);
+});
+
+recipeContainer.addEventListener('click', (event) => {
+  const article = event.target.closest('article');
+  if (article) {
+    const thisID = article.getAttribute('data-id');
+    console.log(`Clicked recipe with this id ${thisID}`);
+    displaySelectedRecipe(thisID);
+  }
+});
 
 const generateContent = (recipes) => {
-  return recipes.map(recipe => {
+  return recipes.map((recipe, index) => {
     return `
-      <article class="recipe">
+      <article class="recipe" data-id="${recipe.idNumber}">
         <img src="${recipe.image}" alt="${recipe.name}" />
         <h3>${recipe.name}</h3>
         <div class="divider-line"></div>
@@ -593,46 +610,30 @@ const generateContent = (recipes) => {
   }).join('');  // Join the array into a single string for HTML insertion
 };
 
+
+
 //Main library, all recipes displayed
 const displayRecipes = () => {
-  let recipeContent = generateContent(recipes);
+  const recipeContent = generateContent(recipes);
   recipeContainer.innerHTML = recipeContent;
-  recipeContainer.addEventListener('click', (event) => {
-    // Check if the clicked element is an article
-    const article = event.target.closest('article');
-    if (article) {
-      const recipeIndex = article.getAttribute('data-index');
-      console.log('Article clicked using displayRecipes!', article);
-      displaySelectedRecipe(recipeIndex);
-    }
-  });
   sortDropdown.style.display = "none";
 };
 
-const displaySelectedRecipe = () => {
-  let recipeContent = '';
-  recipes.forEach(recipe => {
-    recipeContent += `
-    <article class="recipe">
-      <img src="${recipe.image}" alt="${recipe.name}" />
-      <h3>${recipe.name}</h3>
-      <div class="divider-line"></div>
-      <h4>Cuisine: ${recipe.cuisineType}</h4>
-      <h4 class="cooking-time">${recipe.totalTime} minutes</h4>
-      <div class="divider-line"></div>
-      <h4 class="ingredients-header">Ingredients</h4>
-      <ul id="html-list-${recipe.name.replace(/\s+/g, '-')}" class="ingredients-list">
-      ${makeList(recipe.ingredients)}
-      </ul>
-      <h5>Source: <a href="${recipe.url}">${recipe.source}</a></h5>
-    </article>
-  `;
-  });
+const displaySelectedRecipe = (id) => {
+  // Find the recipe with the matching ID
+  const selectedRecipe = recipes.find(recipe => recipe.idNumber === parseInt(id));
+  const recipeContent = generateContent([selectedRecipe]);
   document.getElementById('recipe-container').style.display = "none";
   document.getElementById('randomize-container').style.display = "block";
   document.getElementById('randomize-container').innerHTML = recipeContent;
+
   sortDropdown.style.display = "none";
+
+  console.log('Displaying recipe:', selectedRecipe);
 };
+
+
+
 
 //filter display
 const displayFilteredRecipes = (filteredRecipes) => {
@@ -640,16 +641,9 @@ const displayFilteredRecipes = (filteredRecipes) => {
   document.getElementById('recipe-container').style.display = "grid";
   document.getElementById('randomize-container').style.display = "none";
   recipeContainer.innerHTML = recipeContent;
-
-  recipeContainer.addEventListener('click', (event) => {
-    // Check if the clicked element is an article
-    const article = event.target.closest('article');
-    if (article) {
-      console.log('Article clicked!', article);
-    }
-  });
   sortDropdown.style.display = "none";
 };
+
 
 const displaySortedRecipes = (sortedRecipes = recipes) => {
   let recipeContent = generateContent(sortedRecipes);
@@ -687,6 +681,18 @@ const getAllRecipes = () => {
   displayRecipes();
   sortDropdown.style.display = "none";
 };
+
+/*This part plus displayrecipes and displayselectedrecipe needs work. it does NOT display the correct recipe every time*/
+
+
+
+
+
+
+
+
+
+
 
 
 
