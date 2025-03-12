@@ -402,9 +402,11 @@ listItems.forEach(li => {
   };
 });
 
+
 //Searchbar functionalities
 const searchRecipes = () => {
   const searchByInput = document.getElementById('searchbar').value.toLowerCase();
+
   const filterBySearch = recipes.filter(recipe => {
     const nameMatch = recipe.name.toLowerCase().includes(searchByInput);
     const cuisines = Array.isArray(recipe.cuisineType) ? recipe.cuisineType : [recipe.cuisineType];
@@ -421,24 +423,26 @@ const searchRecipes = () => {
   document.getElementById('searchbar').value = '';
 };
 
-searchInputId.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter' || event.key === 'Search' || event.keyCode === 13) {
-    event.preventDefault();
-    searchRecipes();
-  };
-});
+if (document.getElementById('searchbar')) {
+  searchInputId.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === 'Search' || event.keyCode === 13) {
+      event.preventDefault();
+      searchRecipes();
+    };
+  });
+};
 
 // searchbar wider screens
 const searchRecipes2 = () => {
-  const searchByInput = document.getElementById('searchbar2').value.toLowerCase();
+  const searchbarInput = document.getElementById('searchbar2').value.toLowerCase();
   const filterBySearch = recipes.filter(recipe => {
-    const nameMatch = recipe.name.toLocaleLowerCase().includes(searchByInput);
+    const nameMatch = recipe.name.toLocaleLowerCase().includes(searchbarInput);
     const cuisines = Array.isArray(recipe.cuisineType) ? recipe.cuisineType : [recipe.cuisineType];
     const cuisineMatch = cuisines.some(cuisine =>
-      cuisine.toLowerCase().includes(searchByInput)
+      cuisine.toLowerCase().includes(searchbarInput)
     );
     const ingredientsMatch = recipe.ingredients.some(ingredient =>
-      ingredient.toLowerCase().includes(searchByInput)
+      ingredient.toLowerCase().includes(searchbarInput)
     );
     return nameMatch || cuisineMatch || ingredientsMatch;
   });
@@ -447,85 +451,44 @@ const searchRecipes2 = () => {
   document.getElementById('searchbar2').value = '';
 };
 
-document.getElementById('searchbar2').addEventListener('keydown', (event) => {
-  if (event.key === 'Enter' || event.key === 'Search' || event.keyCode === 13) {
-    event.preventDefault();
-    searchRecipes2();
-  };
-});
 
-//searchbar for smallest screens, with popup
-const searchRecipes3 = () => {
-  const searchByInput = document.getElementById('input-popup').value.toLowerCase();
-  const filterBySearch = recipes.filter(recipe => {
-    const nameMatch = recipe.name.toLowerCase().includes(searchByInput);
-    const cuisines = Array.isArray(recipe.cuisineType) ? recipe.cuisineType : [recipe.cuisineType];
-    const cuisineMatch = cuisines.some(cuisine =>
-      cuisine.toLowerCase().includes(searchByInput)
-    );
-    const ingredientsMatch = recipe.ingredients.some(ingredient =>
-      ingredient.toLowerCase().includes(searchByInput)
-    );
-    return nameMatch || cuisineMatch || ingredientsMatch;
+if (document.getElementById('searchbar2')) {
+  document.getElementById('searchbar2').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === 'Search' || event.keyCode === 13) {
+      event.preventDefault();
+      searchRecipes2();
+    };
   });
-  currentDisplayedRecipes = filterBySearch;
-  displayFilteredRecipes(currentDisplayedRecipes);
-  document.getElementById('input-popup').value = '';
+}
+
+
+// Change searchbar for small screens
+const changeSearchbar = () => {
+  if (window.innerWidth <= 460) {
+    searchInputId.setAttribute('placeholder', '');
+  } else {
+    searchInputId.setAttribute('placeholder', 'Search');
+  };
 };
 
-
-const addSearchEventListener = () => {
-  const inputPopup = document.getElementById('input-popup');
-  if (inputPopup) {
-    inputPopup.removeEventListener('keydown', handleSearchKeyDown);  // Remove old listener to avoid duplication
-    inputPopup.addEventListener('keydown', handleSearchKeyDown);
-  }
-};
-
-
-const handleSearchKeyDown = (event) => {
-  if (event.key === 'Enter' || event.key === 'Search' || event.keyCode === 13) {
-    event.preventDefault();
-    searchRecipes3();
-  }
-};
-
-
+// Open the search popup when clicked
 mainSearchContainer.addEventListener('click', (event) => {
   event.stopPropagation();
-  if (mainSearchContainer.id === 'search' && searchInputId.id === "small-search") {
+
+  if (mainSearchContainer.id === 'search' && window.innerWidth <= 460) {
     mainSearchContainer.id = "search-popup";
-    searchInputId.id = 'input-popup';
     searchInputId.setAttribute('placeholder', 'Search');
     searchInputId.focus();
-    addSearchEventListener();
-  };
-});
-
-document.addEventListener('click', (event) => {
-  const inputPopup = document.getElementById('input-popup');
-  if (inputPopup && !inputPopup.contains(event.target) && !mainSearchContainer.contains(event.target)) {
-    mainSearchContainer.id = "search";
-    searchInputId.id = 'small-search';
-    searchInputId.setAttribute('placeholder', '');
   }
 });
 
+
 window.addEventListener('resize', changeSearchbar);
+
 
 window.addEventListener('DOMContentLoaded', () => {
   changeSearchbar();
 });
-
-const changeSearchbar = () => {
-  if (window.innerWidth <= 460) {
-    searchInputId.setAttribute('placeholder', '');
-    searchInputId.id = "small-search";
-  } else {
-    searchInputId.setAttribute('placeholder', 'Search');
-    searchInputId.classList.remove('small-search');
-  };
-};
 
 
 //Generating content onto the web site
