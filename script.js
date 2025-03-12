@@ -489,13 +489,16 @@ mainSearchContainer.addEventListener('click', (event) => {
     mainSearchContainer.id = "search-popup";
     searchInputId.id = 'input-popup';
     searchInputId.setAttribute('placeholder', 'Search');
+    searchInputId.focus();
 
-    document.getElementById('input-popup').addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === 'Search' || event.keyCode === 13) {
-        event.preventDefault();
-        searchRecipes3();
-      };
-    });
+    if (document.getElementById('input-popup')) {
+      document.getElementById('input-popup').addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === 'Search' || event.keyCode === 13) {
+          event.preventDefault();
+          searchRecipes3();
+        };
+      });
+    };
   };
 });
 
