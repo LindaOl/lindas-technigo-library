@@ -459,7 +459,7 @@ if (document.getElementById('searchbar2')) {
       searchRecipes2();
     };
   });
-}
+};
 
 
 // Change searchbar for small screens
@@ -474,17 +474,21 @@ const changeSearchbar = () => {
 // Open the search popup when clicked
 mainSearchContainer.addEventListener('click', (event) => {
   event.stopPropagation();
-
   if (mainSearchContainer.id === 'search' && window.innerWidth <= 460) {
     mainSearchContainer.id = "search-popup";
     searchInputId.setAttribute('placeholder', 'Search');
     searchInputId.focus();
-  }
+  };
 });
 
+document.addEventListener('click', (event) => {
+  if (mainSearchContainer.id === 'search-popup' && !mainSearchContainer.contains(event.target)) {
+    mainSearchContainer.id = "search";
+    searchInputId.setAttribute('placeholder', '');
+  };
+});
 
 window.addEventListener('resize', changeSearchbar);
-
 
 window.addEventListener('DOMContentLoaded', () => {
   changeSearchbar();
