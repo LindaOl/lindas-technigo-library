@@ -422,7 +422,7 @@ const searchRecipes = () => {
 };
 
 searchInputId.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
+  if (event.key === 'Enter' || event.key === 'Search' || event.keyCode === 13) {
     event.preventDefault();
     searchRecipes();
   };
@@ -448,7 +448,7 @@ const searchRecipes2 = () => {
 };
 
 document.getElementById('searchbar2').addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
+  if (event.key === 'Enter' || event.key === 'Search' || event.keyCode === 13) {
     event.preventDefault();
     searchRecipes2();
   };
@@ -491,7 +491,7 @@ mainSearchContainer.addEventListener('click', (event) => {
     searchInputId.setAttribute('placeholder', 'Search');
 
     document.getElementById('input-popup').addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
+      if (event.key === 'Enter' || event.key === 'Search' || event.keyCode === 13) {
         event.preventDefault();
         searchRecipes3();
       };
