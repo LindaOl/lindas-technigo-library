@@ -470,6 +470,7 @@ const searchRecipes3 = () => {
   });
   currentDisplayedRecipes = filterBySearch;
   displayFilteredRecipes(currentDisplayedRecipes);
+  document.getElementById('input-popup').value = '';
 };
 
 
@@ -490,17 +491,17 @@ mainSearchContainer.addEventListener('click', (event) => {
     searchInputId.id = 'input-popup';
     searchInputId.setAttribute('placeholder', 'Search');
     searchInputId.focus();
-
-    if (document.getElementById('input-popup')) {
-      document.getElementById('input-popup').addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === 'Search' || event.keyCode === 13) {
-          event.preventDefault();
-          searchRecipes3();
-        };
-      });
-    };
   };
 });
+
+if (document.getElementById('input-popup')) {
+  document.getElementById('input-popup').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === 'Search' || event.keyCode === 13) {
+      event.preventDefault();
+      searchRecipes3();
+    };
+  });
+};
 
 document.addEventListener('click', (event) => {
   if (document.getElementById('input-popup') && !document.getElementById('input-popup').contains(event.target) && !document.getElementById('input-popup').contains(event.target)) {
