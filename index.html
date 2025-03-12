@@ -5,14 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./style.css" />
+
   <!-- add favicon -->
   <link rel="icon" type="image/x-icon" href="recipe-images/favicon.ico">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-  <!--gogle fonts icons
-  
--->
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search" />
 
@@ -28,9 +26,8 @@
       <img src="recipe-images/title-white.jpg">
     </div>
 
-
     <form class="form-search1">
-      <div class="search">
+      <div class="search" id="search">
         <span class="material-symbols-outlined">
           search
         </span>
@@ -38,38 +35,33 @@
       </div>
     </form>
 
-
   </header>
 
-  <!--nav with searchbar plus 
-
-
-  and sort: 
-  from most to least ingredients and vice versa, 
-  -->
   <nav>
     <ul>
 
       <li><a href="https://lindas-recipes.netlify.app">Home</a></li>
-      <li><a href="#">Login</a></li>
-      <li><a href="#">About</a></li>
+      <li><a href="signin.html" target="_blank">Login</a></li>
+      <li><a href="#footer">About</a></li>
     </ul>
   </nav>
 
   <section class="filters">
+
     <form class="form-search2">
       <div class="search">
         <span class="material-symbols-outlined">
           search
         </span>
-        <input id="searchbar" class="search-input material-symbols-outlined" type="search" placeholder="Search">
+        <input id="searchbar2" class="search-input material-symbols-outlined" type="search" placeholder="Search">
       </div>
     </form>
+
     <div class="filter-and-sort">
 
       <button type="button" id="filtering-all">All</button>
 
-      <button id="filter-menu">Filters<i class="fa-solid fa-angle-down" style="font-size: 10px;"></i></button>
+      <button id="filter-menu">Filters <i class="fa-solid fa-angle-down" style="font-size: 10px;"></i></button>
       <div id="filter-dropdown">
         <ul>
           <li id="cuisine-link">
@@ -95,7 +87,7 @@
         </ul>
       </div>
 
-      <button id="sort-menu">Sort by<i class="fa-solid fa-angle-down" style="font-size: 10px;"></i></button>
+      <button id="sort-menu">Sort by <i class="fa-solid fa-angle-down" style="font-size: 10px;"></i></button>
       <div id="sort-dropdown">
         <ul>
           <li class="sorting" id="time">
@@ -117,36 +109,31 @@
 
     </div>
 
-
-
     <div class="randomizer">
       <button type="button" class="randomize" onclick="randomRecipe()">Random Recipe</button>
     </div>
+
   </section>
 
 
   <main>
 
-    <!--Recipes-->
+    <!--Recipes displays here-->
     <section id="recipe-container">
     </section>
 
     <section id="randomize-container">
     </section>
 
-    <!--randomize recipe?, button to pick than display recipe-->
-    <section></section>
-
-
   </main>
 
-  <footer>
+  <footer id="footer">
+    <p>Made by Linda Olsson</p>
+    <p>An assignment for Technigo's Web development bootcamp</p>
 
   </footer>
 
 
-
-  <!-- Don't forget to connect the JavaScript file -->
   <script src="script.js"></script>
 </body>
 

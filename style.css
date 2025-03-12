@@ -14,7 +14,6 @@ html {
   font-size: 16px;
 }
 
-/* universal selector 78af76 b0eab0 */
 * {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -31,6 +30,9 @@ body {
   font-size: 16px;
 }
 
+.material-symbols-outlined::placeholder {
+  font-family: Arial, Helvetica, sans-serif;
+}
 
 
 header,
@@ -57,7 +59,7 @@ header {
 }
 
 .title {
-  background-color: #FEFEF7;
+  background-color: var(--background-main);
   display: inline-flex;
   flex: 1;
   align-items: center;
@@ -102,13 +104,14 @@ header img {
   width: 100%;
   overflow-x: auto;
   white-space: nowrap;
-
+  transition: all 0.3s ease;
 }
 
-#searchbar {
+#searchbar,
+#searchbar2,
+.search input {
   font-family: Arial, Helvetica, sans-serif;
 }
-
 
 .search-input {
   font-size: 16px;
@@ -212,6 +215,8 @@ nav a:hover {
 #sort-dropdown img {
   height: 20px;
   width: 20px;
+  display: inline-block;
+  margin-right: 3px;
 }
 
 #filter-dropdown li,
@@ -224,13 +229,22 @@ nav a:hover {
   filter: drop-shadow(2px 2px 2px rgba(137, 137, 137, 0.5));
 }
 
+#sort-dropdown li img {
+  -webkit-filter: invert(100%);
+}
+
+#sort-dropdown li:hover img {
+  -webkit-filter: invert(0%);
+  transition: 0.7s;
+}
+
 #filter-dropdown li:hover,
 ul.submenu-cuisine li:hover,
 ul.submenu-ingredients li:hover,
 #sort-dropdown li:hover {
   background-color: var(--background-button);
   color: black;
-  transition: 0.5s;
+  transition: 0.7s;
 }
 
 ul.submenu-cuisine,
@@ -261,15 +275,11 @@ ul.submenu-ingredients li {
   margin-right: auto;
 }
 
-
-
 main {
   grid-column: 1 / 2;
   padding: 0px 1rem;
   width: 100%;
 }
-
-
 
 #randomize-container {
   width: 100%;
@@ -309,7 +319,7 @@ main {
 
 .recipe li {
   line-height: 28px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   font-family: var(--font-family-sans-serif);
 }
 
@@ -349,11 +359,19 @@ main {
 footer {
   grid-column: 1 / 2;
   width: 100%;
+  background-color: var(--searchbar-bg-color);
+  display: flex;
+  align-items: end;
+  justify-content: end;
+  height: 100px;
+  padding: 20px;
+  flex-direction: column;
+  font-size: 0.6em;
 }
 
+
+
 /*Media query for tablet, 668px - 1023px*/
-
-
 @media screen and (min-width: 668px) and (max-width: 1023px) {
 
   body {
@@ -393,33 +411,28 @@ footer {
     grid-area: header;
   }
 
+  header img {
+    margin-bottom: 10px;
+    max-height: 60px;
+  }
+
+
   .title {
     width: 50%;
     display: flex;
     justify-content: center;
   }
 
-  header img {
-    margin-bottom: 10px;
-    max-height: 60px;
-  }
-
   .filters {
     background-image: url(recipe-images/hero-img.jpg);
-    object-fit: cover;
-    object-position: bottom;
+    background-size: cover;
+    background-position: bottom;
+    grid-area: filters;
   }
-
-
-
-  .recipe {}
-
 
   .search {
     filter: drop-shadow(2px 2px 2px rgba(137, 137, 137, 1));
   }
-
-
 
   .form-search1 {
     display: none;
@@ -429,26 +442,18 @@ footer {
     display: flex;
   }
 
-  .filters {
-    grid-area: filters;
-  }
-
-
-
   .randomizer {
     padding-bottom: 10px;
   }
 
   #recipe-container {
     margin-top: 30px;
-    display: grid;
     grid-column-start: 1;
     grid-column-end: 3;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     padding-left: 20px;
     padding-right: 20px;
-
   }
 
   #recipe-container img {
@@ -457,10 +462,10 @@ footer {
 
   #randomize-container {
     padding-top: 30px;
-    display: grid;
     grid-column-start: 1;
     grid-column-end: 3;
     gap: 30px;
+    justify-content: center;
   }
 
   .recipe {
@@ -484,7 +489,10 @@ footer {
 
   .recipe img {
     aspect-ratio: 16 / 9;
+  }
 
+  footer {
+    grid-area: footer;
   }
 }
 
@@ -509,10 +517,6 @@ footer {
     padding: 0 10px;
   }
 
-  .filter-and-sort {
-    height: 40vhs;
-  }
-
   nav {
     grid-area: nav;
     display: flex;
@@ -532,11 +536,10 @@ footer {
     display: flex;
     height: 40vh;
     background-image: url(recipe-images/hero-img.jpg);
+    background-size: cover;
     background-position: center;
     justify-content: end;
   }
-
-  .filters img {}
 
   .form-search2 {
     display: block;
@@ -561,16 +564,17 @@ footer {
 
   #randomize-container {
     padding-top: 30px;
-    grid-column-start: 1;
-    grid-column-end: 5;
+    grid-column-start: 2;
+    grid-column-end: 4;
+    width: 100%;
+    max-width: 1290px;
+    justify-content: center;
 
   }
 
   #randomize-container img {
     aspect-ratio: 21 / 9;
-
   }
-
 
   .recipe {
     z-index: 3;
@@ -582,17 +586,43 @@ footer {
   }
 
   .recipe {
-    font-size: 1.2em;
-    letter-spacing: 1.3px;
+    font-size: 1.2vw;
   }
 
   .recipe h3 {
-    font-size: 1.4em;
+    font-size: 1.7vw;
   }
 
   .recipe h4 {
-    font-size: 1.5em;
+    font-size: 1.3vw;
   }
 
+  footer {
+    grid-area: footer;
+    font-size: 1.1vw;
+    letter-spacing: 0.5px;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .search {
+    width: 35px;
+  }
+
+  .form-search1 {
+    padding-right: 10px;
+  }
+
+  #search-popup {
+    position: absolute;
+    top: 85px;
+    right: 0;
+    width: 250px;
+    z-index: 1200;
+  }
+
+  #search-popup input {
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
 
 }

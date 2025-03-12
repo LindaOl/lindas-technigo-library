@@ -1,10 +1,3 @@
-/*Here we have created two different arrays that you can work with if you want.
-If you choose to create your own arrays with elements, just make sure to create
-some properties that is possible to filter and sort.
-
-Remember to remove code you don't need.
-*/
-
 const recipes = [
   {
     name: 'Individual vegetarian lasagnes',
@@ -241,6 +234,9 @@ const sortDropdown = document.getElementById('sort-dropdown');
 const sortItems = document.querySelectorAll('#sort-dropdown li');
 const listItems = document.querySelectorAll('#filter-dropdown li');
 
+const searchInputId = document.getElementById('searchbar');
+const mainSearchContainer = document.getElementById('search');
+
 const sortByNameButton = document.getElementById('name');
 const sortByReverseButton = document.getElementById('name-reverse');
 const sortByTimeButton = document.getElementById('time');
@@ -256,20 +252,43 @@ const sortButtons = [
   sortByReverseButton
 ];
 
-
+const article = document.createElement('article');
 
 const icon = document.createElement('img');
 icon.src = './recipe-images/x_circle_icon.png';
 icon.alt = 'icon';
-icon.style.marginRight = '3px';
-icon.id = 'icon'
-
-const article = document.createElement('article');
+icon.id = 'icon';
 
 const originalHTML = Array.from(sortItems).map(item => item.innerHTML);
 const originalID = Array.from(sortItems).map(item => item.id);
 let currentDisplayedRecipes = [...recipes];
 let currentLinkClicked = null;
+
+
+// Helper functions
+const makeList = (ingredientItem) => {
+  return ingredientItem.map(ingredient => `<li>${ingredient}</li>`).join('');
+};
+
+const countIngredients = (recipe) => {
+  return recipe.ingredients.length;
+};
+
+//Check if the searchword is a word in the meat array
+const checkForMeat = (recipe) => {
+  return recipe.ingredients.some(ingredient => {
+    return meat.some(meatWord =>
+      ingredient.toLowerCase().includes(meatWord));
+  });
+};
+const resetOtherButtons = (buttonToKeepActive) => {
+  sortItems.forEach((item, index) => {
+    if (item !== buttonToKeepActive) {
+      item.id = originalID[index];
+      item.style.paddingLeft = "10px";
+    };
+  });
+};
 
 const getDefaultLinkText = () => {
   sortItems.forEach((item, index) => {
@@ -284,19 +303,10 @@ const getDefaultSorting = () => {
   displaySortedRecipes(currentDisplayedRecipes);
 };
 
-const resetOtherButtons = (buttonToKeepActive) => {
-  sortItems.forEach((item, index) => {
-    if (item !== buttonToKeepActive) {
-      item.id = originalID[index];
-      item.style.paddingLeft = "10px";
-    }
-  });
-};
-
-
-const makeList = (ingredientItem) => {
-  return ingredientItem.map(ingredient => `<li>${ingredient}</li>`).join('');
-};
+recipes.forEach((recipe, index) => {
+  recipe.idNumber = index + 1;
+  article.setAttribute('data-id', recipe.idNumber);
+});
 
 recipes.forEach(recipe => {
   if (isNaN(recipe.totalTime)) {
@@ -304,12 +314,13 @@ recipes.forEach(recipe => {
   };
 });
 
+//sorting functions
 const sortByTime = (array) => {
   return array.toSorted((a, b) => a.totalTime - b.totalTime);
 };
 
-const countIngredients = (recipe) => {
-  return recipe.ingredients.length;
+const sortByTimeDecend = (array) => {
+  return array.toSorted((a, b) => b.totalTime - a.totalTime);
 };
 
 const sortByMost = (array) => {
@@ -319,22 +330,16 @@ const sortByLeast = (array) => {
   return array.toSorted((a, b) => countIngredients(a) - countIngredients(b));
 };
 
-const toggleFilterDropdown = () => {
-  if (filterDropdown.style.display === "block") {
-    filterDropdown.style.display = "none";
-  } else {
-    filterDropdown.style.display = "block";
-    sortDropdown.style.display = "none";
-  }
-};
-
-const toggleSortDropdown = () => {
-  if (sortDropdown.style.display === "block") {
-    sortDropdown.style.display = "none";
-  } else {
-    sortDropdown.style.display = "block";
-    filterDropdown.style.display = "none";
-  }
+//Dropdowns
+const toggleDropdown = (dropdownToShow) => {
+  const dropdowns = [filterDropdown, sortDropdown];
+  dropdowns.forEach(dropdown => {
+    if (dropdown === dropdownToShow) {
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    } else {
+      dropdown.style.display = "none";
+    };
+  });
 };
 
 const loadDocumentCloseListener = () => {
@@ -345,19 +350,9 @@ const loadDocumentCloseListener = () => {
 
     if (!sortDropdown.contains(e.target) && e.target !== sortMenuButton) {
       sortDropdown.style.display = "none";
-    }
+    };
   });
 };
-
-
-filterMenuButton.addEventListener('click', toggleFilterDropdown);
-sortMenuButton.addEventListener('click', toggleSortDropdown);
-
-document.getElementById('filtering-all').addEventListener('click', () => {
-  getAllRecipes();
-  getDefaultLinkText();
-});
-
 
 const getSubmenu = () => {
   const menuItems = document.querySelectorAll('li');
@@ -369,15 +364,15 @@ const getSubmenu = () => {
       //close other submenues if open
       if (currentOpenSubmenu && currentOpenSubmenu !== submenu) {
         currentOpenSubmenu.style.display = "none";
-      }
+      };
       if (submenu) {
         if (submenu.style.display === "block") {
           submenu.style.display = "none";
         } else {
           submenu.style.display = "block";
-        }
+        };
         currentOpenSubmenu = submenu.style.display === "block" ? submenu : null;
-      }
+      };
       e.stopPropagation();
     });
   });
@@ -385,15 +380,9 @@ const getSubmenu = () => {
 getSubmenu();
 
 
-//Check if the searchword is a word in the meat array
-const checkForMeat = (recipe) => {
-  return recipe.ingredients.some(ingredient => {
-    return meat.some(meatWord =>
-      ingredient.toLowerCase().includes(meatWord));
-  });
-};
+filterMenuButton.addEventListener('click', () => toggleDropdown(filterDropdown));
+sortMenuButton.addEventListener('click', () => toggleDropdown(sortDropdown));
 
-//make eventListener on each menu word, and run filter functions
 listItems.forEach(li => {
   if (li.classList.contains('submenu-item')) {
     li.addEventListener('click', () => {
@@ -406,152 +395,42 @@ listItems.forEach(li => {
       } else {
         filterByIngredient(currentSearchWord);
         document.getElementById('filter-dropdown').style.display = "none";
-      }
+      };
       getDefaultLinkText();
       resetOtherButtons();
     });
-  }
-});
-
-const filterByIngredient = (currentSearchWord) => {
-  currentDisplayedRecipes = recipes.filter(recipe => {
-    return recipe.ingredients.some(ingredient =>
-      ingredient.toLowerCase().includes(currentSearchWord)
-    );
-  });
-  displayFilteredRecipes(currentDisplayedRecipes);
-  getDefaultLinkText();
-  resetOtherButtons();
-};
-
-
-listItems.forEach(li => {
-  if (li.classList.contains('submenu-item-c')) {
-    li.addEventListener('click', () => {
-      const currentSearchWord = li.innerHTML.toLowerCase();
-      filterByCuisine(currentSearchWord);
-      document.getElementById('filter-dropdown').style.display = "none";
-    });
-  }
-});
-
-const filterByCuisine = (currentSearchWord) => {
-  currentDisplayedRecipes = recipes.filter(recipe => {
-    const cuisines = Array.isArray(recipe.cuisineType) ? recipe.cuisineType : [recipe.cuisineType];
-    return cuisines.some(cuisine =>
-      cuisine.toLowerCase().includes(currentSearchWord)
-    );
-  });
-  displayFilteredRecipes(currentDisplayedRecipes);
-  getDefaultLinkText();
-  resetOtherButtons();
-};
-
-//Sorting functions
-sortByNameButton.addEventListener('click', (event) => {
-  if (sortByNameButton.id === 'name') {
-    const sortByName = () => {
-      currentDisplayedRecipes.sort((a, b) => a.name.localeCompare(b.name));
-    };
-    sortByName();
-    displaySortedRecipes(currentDisplayedRecipes);
-    event.target.insertBefore(icon, event.target.firstChild);
-    event.target.style = "padding-left: 0px;";
-    sortByNameButton.id = 'activeName';
-    resetOtherButtons(sortByNameButton);
-  } else {
-    getDefaultSorting();
-    getDefaultLinkText();
-    resetOtherButtons();
   };
 });
 
-
-sortByReverseButton.addEventListener('click', (event) => {
-  if (sortByReverseButton.id === 'name-reverse') {
-    const sortByName = () => {
-      currentDisplayedRecipes.sort((a, b) => b.name.localeCompare(a.name));
-    };
-    sortByName();
-    displaySortedRecipes(currentDisplayedRecipes);
-    event.target.insertBefore(icon, event.target.firstChild);
-    event.target.style = "padding-left: 0px;";
-    sortByReverseButton.id = 'activeReverse';
-    resetOtherButtons(sortByReverseButton);
-  } else {
-    getDefaultSorting();
-    getDefaultLinkText();
-    resetOtherButtons();
-  };
-});
-
-sortByTimeButton.addEventListener('click', (event) => {
-  if (sortByTimeButton.id === 'time') {
-    const sortedRecipes = sortByTime([...currentDisplayedRecipes]);
-    displaySortedRecipes(sortedRecipes);
-    event.target.insertBefore(icon, event.target.firstChild);
-    event.target.style = "padding-left: 0px;";
-    sortByTimeButton.id = 'activeTime';
-    resetOtherButtons(sortByTimeButton);
-  } else {
-    getDefaultSorting();
-    getDefaultLinkText();
-    resetOtherButtons();
-  };
-});
-
-const sortByTimeDecend = (array) => {
-  return array.toSorted((a, b) => b.totalTime - a.totalTime);
-};
-
-sortByDecendTimeButton.addEventListener('click', (event) => {
-  if (sortByDecendTimeButton.id === 'time-decend') {
-    const sortedRecipes = sortByTimeDecend([...currentDisplayedRecipes]);
-    displaySortedRecipes(sortedRecipes);
-    event.target.insertBefore(icon, event.target.firstChild);
-    event.target.style = "padding-left: 0px;";
-    sortByDecendTimeButton.id = 'activeDecend';
-    resetOtherButtons(sortByDecendTimeButton);
-  } else {
-    getDefaultSorting();
-    getDefaultLinkText();
-    resetOtherButtons();
-  }
-});
-
-sortByMostButton.addEventListener('click', (event) => {
-  if (event.target.id === 'most-ingredients') {
-    const sortedByMost = sortByMost([...currentDisplayedRecipes]);
-    displaySortedRecipes(sortedByMost);
-    sortByMostButton.id = 'activeSortByMost';
-    event.target.insertBefore(icon, event.target.firstChild);
-    event.target.style = "padding-left: 0px;";
-    resetOtherButtons(sortByMostButton);
-  } else {
-    getDefaultSorting();
-    getDefaultLinkText();
-    resetOtherButtons();
-  };
-});
-
-sortByLeastButton.addEventListener('click', (event) => {
-  if (event.target.id === 'least-ingredients') {
-    const sortedByLeast = sortByLeast([...currentDisplayedRecipes]);
-    displaySortedRecipes(sortedByLeast);
-    sortByLeastButton.id = 'activeSortByLeast';
-    event.target.insertBefore(icon, event.target.firstChild);
-    event.target.style = "padding-left: 0px;";
-    resetOtherButtons(sortByLeastButton);
-  } else {
-    getDefaultSorting();
-    getDefaultLinkText();
-    resetOtherButtons();
-  };
-});
-
-
+//Searchbar functionalities
 const searchRecipes = () => {
   const searchByInput = document.getElementById('searchbar').value.toLowerCase();
+  const filterBySearch = recipes.filter(recipe => {
+    const nameMatch = recipe.name.toLowerCase().includes(searchByInput);
+    const cuisines = Array.isArray(recipe.cuisineType) ? recipe.cuisineType : [recipe.cuisineType];
+    const cuisineMatch = cuisines.some(cuisine =>
+      cuisine.toLowerCase().includes(searchByInput)
+    );
+    const ingredientsMatch = recipe.ingredients.some(ingredient =>
+      ingredient.toLowerCase().includes(searchByInput)
+    );
+    return nameMatch || cuisineMatch || ingredientsMatch;
+  });
+  currentDisplayedRecipes = filterBySearch;
+  displayFilteredRecipes(currentDisplayedRecipes);
+  document.getElementById('searchbar').value = '';
+};
+
+searchInputId.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    searchRecipes();
+  };
+});
+
+// searchbar wider screens
+const searchRecipes2 = () => {
+  const searchByInput = document.getElementById('searchbar2').value.toLowerCase();
   const filterBySearch = recipes.filter(recipe => {
     const nameMatch = recipe.name.toLocaleLowerCase().includes(searchByInput);
     const cuisines = Array.isArray(recipe.cuisineType) ? recipe.cuisineType : [recipe.cuisineType];
@@ -562,34 +441,79 @@ const searchRecipes = () => {
       ingredient.toLowerCase().includes(searchByInput)
     );
     return nameMatch || cuisineMatch || ingredientsMatch;
-  })
+  });
   currentDisplayedRecipes = filterBySearch;
   displayFilteredRecipes(currentDisplayedRecipes);
-  document.getElementById('searchbar').value = '';
+  document.getElementById('searchbar2').value = '';
 };
 
-document.getElementById('searchbar').addEventListener('keydown', (event) => {
+document.getElementById('searchbar2').addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
     event.preventDefault();
-    searchRecipes();
-  }
+    searchRecipes2();
+  };
 });
 
+//searchbar for smallest screens, with popup
+const searchRecipes3 = () => {
+  const searchByInput = document.getElementById('input-popup').value.toLowerCase();
+  const filterBySearch = recipes.filter(recipe => {
+    const nameMatch = recipe.name.toLowerCase().includes(searchByInput);
+    const cuisines = Array.isArray(recipe.cuisineType) ? recipe.cuisineType : [recipe.cuisineType];
+    const cuisineMatch = cuisines.some(cuisine =>
+      cuisine.toLowerCase().includes(searchByInput)
+    );
+    const ingredientsMatch = recipe.ingredients.some(ingredient =>
+      ingredient.toLowerCase().includes(searchByInput)
+    );
+    return nameMatch || cuisineMatch || ingredientsMatch;
+  });
+  currentDisplayedRecipes = filterBySearch;
+  displayFilteredRecipes(currentDisplayedRecipes);
+};
 
-recipes.forEach((recipe, index) => {
-  recipe.idNumber = index + 1;
-  article.setAttribute('data-id', recipe.idNumber);
+
+// Popup searchbar for smaller screens
+const changeSearchbar = () => {
+  if (window.innerWidth <= 460) {
+    searchInputId.setAttribute('placeholder', '');
+    searchInputId.id = "small-search";
+  } else {
+    searchInputId.setAttribute('placeholder', 'Search');
+    searchInputId.classList.remove('small-search');
+  };
+};
+mainSearchContainer.addEventListener('click', (event) => {
+  event.stopPropagation();
+  if (mainSearchContainer.id === 'search' && searchInputId.id === "small-search") {
+    mainSearchContainer.id = "search-popup";
+    searchInputId.id = 'input-popup';
+    searchInputId.setAttribute('placeholder', 'Search');
+
+    document.getElementById('input-popup').addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        searchRecipes3();
+      };
+    });
+  };
 });
 
-recipeContainer.addEventListener('click', (event) => {
-  const article = event.target.closest('article');
-  if (article) {
-    const thisID = article.getAttribute('data-id');
-    console.log(`Clicked recipe with this id ${thisID}`);
-    displaySelectedRecipe(thisID);
-  }
+document.addEventListener('click', (event) => {
+  if (document.getElementById('input-popup') && !document.getElementById('input-popup').contains(event.target) && !document.getElementById('input-popup').contains(event.target)) {
+    mainSearchContainer.id = "search";
+    searchInputId.id = 'small-search';
+    searchInputId.setAttribute('placeholder', '');
+  };
 });
 
+window.addEventListener('resize', changeSearchbar);
+
+window.addEventListener('DOMContentLoaded', () => {
+  changeSearchbar();
+});
+
+//Generating content onto the web site
 const generateContent = (recipes) => {
   return recipes.map((recipe, index) => {
     return `
@@ -611,10 +535,159 @@ const generateContent = (recipes) => {
 };
 
 
+//Sorting functions
+sortByNameButton.addEventListener('click', (event) => {
+  if (sortByNameButton.id === 'name') {
+    const sortByName = () => {
+      currentDisplayedRecipes.sort((a, b) => a.name.localeCompare(b.name));
+    };
+    sortByName();
+    displaySortedRecipes(currentDisplayedRecipes);
+    sortByNameButton.id = 'activeName';
+    updateButtonState(sortByNameButton);
+  } else {
+    resetButtons();
+  };
+});
 
-//Main library, all recipes displayed
+sortByReverseButton.addEventListener('click', (event) => {
+  if (sortByReverseButton.id === 'name-reverse') {
+    const sortByNameReverse = () => {
+      currentDisplayedRecipes.sort((a, b) => b.name.localeCompare(a.name));
+    };
+    sortByNameReverse();
+    displaySortedRecipes(currentDisplayedRecipes);
+    sortByReverseButton.id = 'activeReverse';
+    updateButtonState(sortByReverseButton);
+  } else {
+    resetButtons();
+  };
+});
+
+sortByTimeButton.addEventListener('click', () => {
+  if (sortByTimeButton.id === 'time') {
+    const sortedRecipes = sortByTime([...currentDisplayedRecipes]);
+    displaySortedRecipes(sortedRecipes);
+    sortByTimeButton.id = 'activeTime';
+    updateButtonState(sortByTimeButton);
+  } else {
+    resetButtons();
+  };
+});
+
+sortByDecendTimeButton.addEventListener('click', () => {
+  if (sortByDecendTimeButton.id === 'time-decend') {
+    const sortedRecipes = sortByTimeDecend([...currentDisplayedRecipes]);
+    displaySortedRecipes(sortedRecipes);
+    sortByDecendTimeButton.id = 'activeDecend';
+    updateButtonState(sortByDecendTimeButton);
+  } else {
+    resetButtons();
+  };
+});
+
+sortByMostButton.addEventListener('click', (event) => {
+  if (event.target.id === 'most-ingredients') {
+    const sortedByMost = sortByMost([...currentDisplayedRecipes]);
+    displaySortedRecipes(sortedByMost);
+    sortByMostButton.id = 'activeSortByMost';
+    event.target.insertBefore(icon, event.target.firstChild);
+    event.target.style = "padding-left: 0px;";
+    resetOtherButtons(sortByMostButton);
+  } else {
+    resetButtons();
+  };
+});
+
+sortByLeastButton.addEventListener('click', (event) => {
+  if (event.target.id === 'least-ingredients') {
+    const sortedByLeast = sortByLeast([...currentDisplayedRecipes]);
+    displaySortedRecipes(sortedByLeast);
+    sortByLeastButton.id = 'activeSortByLeast';
+    updateButtonState(sortByLeastButton);
+  } else {
+    resetButtons();
+  };
+});
+
+const updateButtonState = (button) => {
+  button.insertBefore(icon, button.firstChild);
+  button.style.paddingLeft = "0px";
+  resetOtherButtons(button);
+};
+
+const resetButtons = () => {
+  getDefaultSorting();
+  getDefaultLinkText();
+  resetOtherButtons();
+};
+
+//Filters
+document.getElementById('filtering-all').addEventListener('click', () => {
+  getAllRecipes();
+  getDefaultLinkText();
+});
+
+const filterByIngredient = (currentSearchWord) => {
+  currentDisplayedRecipes = recipes.filter(recipe => {
+    return recipe.ingredients.some(ingredient =>
+      ingredient.toLowerCase().includes(currentSearchWord)
+    );
+  });
+  displayFilteredRecipes(currentDisplayedRecipes);
+  getDefaultLinkText();
+  resetOtherButtons();
+};
+
+listItems.forEach(li => {
+  if (li.classList.contains('submenu-item-c')) {
+    li.addEventListener('click', () => {
+      const currentSearchWord = li.innerHTML.toLowerCase();
+      filterByCuisine(currentSearchWord);
+      document.getElementById('filter-dropdown').style.display = "none";
+    });
+  };
+});
+
+const filterByCuisine = (currentSearchWord) => {
+  currentDisplayedRecipes = recipes.filter(recipe => {
+    const cuisines = Array.isArray(recipe.cuisineType) ? recipe.cuisineType : [recipe.cuisineType];
+    return cuisines.some(cuisine =>
+      cuisine.toLowerCase().includes(currentSearchWord)
+    );
+  });
+  displayFilteredRecipes(currentDisplayedRecipes);
+  getDefaultLinkText();
+  resetOtherButtons();
+};
+
+
+//Main function for displaying recipes
+recipeContainer.addEventListener('click', (event) => {
+  const article = event.target.closest('article');
+  if (article) {
+    const thisID = article.getAttribute('data-id');
+    displaySelectedRecipe(thisID);
+  };
+});
+
 const displayRecipes = () => {
   const recipeContent = generateContent(recipes);
+  recipeContainer.innerHTML = recipeContent;
+  sortDropdown.style.display = "none";
+};
+
+const getAllRecipes = () => {
+  document.getElementById('recipe-container').style.display = "grid";
+  document.getElementById('randomize-container').style.display = "none";
+  displayRecipes();
+  sortDropdown.style.display = "none";
+};
+
+const displayFilteredRecipes = (filteredRecipes) => {
+  let recipeContent = generateContent(filteredRecipes)
+  document.getElementById('recipe-container').style.display = "grid";
+  document.getElementById('randomize-container').style.display = "none";
   recipeContainer.innerHTML = recipeContent;
   sortDropdown.style.display = "none";
 };
@@ -624,33 +697,17 @@ const displaySelectedRecipe = (id) => {
   const selectedRecipe = recipes.find(recipe => recipe.idNumber === parseInt(id));
   const recipeContent = generateContent([selectedRecipe]);
   document.getElementById('recipe-container').style.display = "none";
-  document.getElementById('randomize-container').style.display = "block";
+  document.getElementById('randomize-container').style.display = "flex";
   document.getElementById('randomize-container').innerHTML = recipeContent;
 
   sortDropdown.style.display = "none";
-
-  console.log('Displaying recipe:', selectedRecipe);
 };
-
-
-
-
-//filter display
-const displayFilteredRecipes = (filteredRecipes) => {
-  let recipeContent = generateContent(filteredRecipes)
-  document.getElementById('recipe-container').style.display = "grid";
-  document.getElementById('randomize-container').style.display = "none";
-  recipeContainer.innerHTML = recipeContent;
-  sortDropdown.style.display = "none";
-};
-
 
 const displaySortedRecipes = (sortedRecipes = recipes) => {
   let recipeContent = generateContent(sortedRecipes);
   recipeContainer.innerHTML = recipeContent;
   sortDropdown.style.display = "none";
 };
-
 
 //Randomize-button
 const randomRecipe = () => {
@@ -675,14 +732,14 @@ const randomRecipe = () => {
   sortDropdown.style.display = "none";
 };
 
-const getAllRecipes = () => {
-  document.getElementById('recipe-container').style.display = "grid";
-  document.getElementById('randomize-container').style.display = "none";
-  displayRecipes();
-  sortDropdown.style.display = "none";
-};
 
-/*This part plus displayrecipes and displayselectedrecipe needs work. it does NOT display the correct recipe every time*/
+
+
+
+
+
+
+
 
 
 
