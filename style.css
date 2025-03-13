@@ -303,6 +303,11 @@ main {
   filter: drop-shadow(2px 2px 3px rgba(137, 137, 137, 0.5));
   padding: 0 0 10px 0;
   font-family: var(--font-family-serif);
+  transition: box-shadow 0.3s ease;
+}
+
+.recipe:hover {
+  box-shadow: 0 0 5px 3px var(--nav-link-text-color);
 }
 
 .recipe img {
