@@ -1,7 +1,5 @@
 # Library
 
-Replace this readme with your own information about the project. You can include things like:
-
 ## Project description
 The assignment is to make a website which is a library of recipes or books.
 
