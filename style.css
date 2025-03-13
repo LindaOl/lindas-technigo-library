@@ -430,6 +430,10 @@ footer {
     grid-area: filters;
   }
 
+  .filters button {
+    letter-spacing: 0.6px;
+  }
+
   .search {
     filter: drop-shadow(2px 2px 2px rgba(137, 137, 137, 1));
   }
@@ -479,12 +483,12 @@ footer {
 
   .recipe h3,
   .recipe h4,
-  .recipe {
+  .recipe h5 {
     padding-left: 40px;
   }
 
-  .recipe {
-    font-size: 1.3vw;
+  .recipe li {
+    font-size: 1.5vw;
   }
 
   .recipe h3 {
@@ -551,6 +555,10 @@ footer {
     background-size: cover;
     background-position: center;
     justify-content: end;
+  }
+
+  .filters button {
+    letter-spacing: 0.6px;
   }
 
   .form-search2 {
