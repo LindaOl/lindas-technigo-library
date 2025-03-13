@@ -484,11 +484,11 @@ footer {
   .recipe h3,
   .recipe h4,
   .recipe h5 {
-    padding-left: 40px;
+    padding-left: 30px;
   }
 
   .recipe li {
-    font-size: 1.5vw;
+    font-size: 1.7vw;
   }
 
   .recipe h3 {
@@ -496,7 +496,7 @@ footer {
   }
 
   .recipe h4 {
-    font-size: 1.2vw;
+    font-size: 1.3vw;
   }
 
   .recipe ul {
@@ -596,17 +596,14 @@ footer {
     aspect-ratio: 21 / 9;
   }
 
-  .recipe {
-    z-index: 3;
-    border-radius: 10px 10px 0 0;
-  }
-
   #recipe-container img {
     aspect-ratio: 4 / 3;
   }
 
   .recipe {
-    font-size: 0.8vw;
+    z-index: 3;
+    border-radius: 10px 10px 0 0;
+
   }
 
   .recipe h3 {
