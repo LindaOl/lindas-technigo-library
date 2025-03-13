@@ -479,8 +479,20 @@ footer {
 
   .recipe h3,
   .recipe h4,
-  .recipe h5 {
+  .recipe {
     padding-left: 40px;
+  }
+
+  .recipe {
+    font-size: 1.3vw;
+  }
+
+  .recipe h3 {
+    font-size: 1.5vw;
+  }
+
+  .recipe h4 {
+    font-size: 1.2vw;
   }
 
   .recipe ul {
@@ -512,7 +524,7 @@ footer {
 
   main {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(9, 1fr);
     grid-area: main;
     padding: 0 10px;
   }
@@ -552,8 +564,8 @@ footer {
   #recipe-container {
     margin-top: 30px;
     display: grid;
-    grid-column-start: 1;
-    grid-column-end: 5;
+    grid-column-start: 2;
+    grid-column-end: 9;
     grid-template-columns: repeat(4, 1fr);
     gap: 30px;
   }
@@ -565,7 +577,7 @@ footer {
   #randomize-container {
     padding-top: 30px;
     grid-column-start: 2;
-    grid-column-end: 4;
+    grid-column-end: 9;
     width: 100%;
     max-width: 1290px;
     justify-content: center;
@@ -586,15 +598,15 @@ footer {
   }
 
   .recipe {
-    font-size: 1.2vw;
+    font-size: 0.8vw;
   }
 
   .recipe h3 {
-    font-size: 1.7vw;
+    font-size: 1.1vw;
   }
 
   .recipe h4 {
-    font-size: 1.3vw;
+    font-size: 0.9vw;
   }
 
   footer {
