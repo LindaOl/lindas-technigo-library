@@ -1,6 +1,7 @@
 :root {
     --inputPlaceholder: #4D4D4D;
     --background-button: #b0eab0;
+    --inputBgColor: #f4f4f4;
 }
 
 * {
@@ -69,7 +70,7 @@ input[type="password"] {
     flex-shrink: 1;
     display: inline-block;
     border-radius: 30px;
-    background-color: white;
+    background-color: var(--inputBgColor);
     padding: 5px 10px;
     margin: 5px 0 15px 0;
     color: black;
@@ -89,7 +90,7 @@ input[type="password"] {
 input[type="text"]:focus,
 input[type="password"]:focus {
     border: 2px solid var(--nav-link-text-color);
-    outline: var(--menu-background);
+    outline: var(--inputPlaceholder);
 }
 
 input[type="text"]:required:invalid:not(:focus):not(:placeholder-shown),
@@ -138,6 +139,11 @@ input::placeholder {
     font-size: 0.8em;
     align-content: center;
     padding-left: 10px;
+}
+
+#searchbar2::placeholder,
+#searchbar::placeholder {
+    text-transform: none;
 }
 
 
@@ -205,6 +211,10 @@ button:hover {
     transition: 0.5s;
 }
 
+.login {
+    font-size: 12px;
+}
+
 /*Media query for tablet, 668px - 1023px*/
 @media screen and (min-width: 668px) and (max-width: 1023px) {
     #signin {
@@ -218,7 +228,7 @@ button:hover {
 @media screen and (min-width: 1024px) {
     #signin {
         grid-column-start: 1;
-        grid-column-end: 5;
+        grid-column-end: 10;
     }
 
     fieldset {
